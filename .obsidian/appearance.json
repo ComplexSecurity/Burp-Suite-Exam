@@ -1,0 +1,17 @@
+{
+  "accentColor": "",
+  "cssTheme": "Moonlight",
+  "enabledCssSnippets": [
+    "supercharged-links-gen",
+    "cards",
+    "colorized-graph",
+    "colorized-pills",
+    "embed",
+    "embed-responsive",
+    "extended-colorscheme",
+    "image-fixer",
+    "callouts"
+  ],
+  "theme": "moonstone",
+  "baseFontSize": 14
+}

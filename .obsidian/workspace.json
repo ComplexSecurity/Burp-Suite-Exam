@@ -1,0 +1,225 @@
+{
+  "main": {
+    "id": "dcf1ea9de5edd064",
+    "type": "split",
+    "children": [
+      {
+        "id": "dfef5602d2f251a1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0885259c49e76288",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Insecure Deserialization/Insecure Deserialization.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "6418d8370ba1bc7f",
+    "type": "split",
+    "children": [
+      {
+        "id": "a688a1e394281503",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "139f476375acb3ee",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "5c63651c74162893",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "37269dad83d4de57",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 276.50499725341797
+  },
+  "right": {
+    "id": "fec3a4ea176c31b0",
+    "type": "split",
+    "children": [
+      {
+        "id": "4ab998c7a8936f95",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9a786b276deccd90",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Insecure Deserialization/Insecure Deserialization.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "7e98f448ef24dfc1",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Insecure Deserialization/Insecure Deserialization.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "5c2dad2452cbd296",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "9dbacb197c9a35d6",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Insecure Deserialization/Insecure Deserialization.md"
+              }
+            }
+          },
+          {
+            "id": "1a2baa4c45c9df3c",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {}
+            }
+          },
+          {
+            "id": "834a0616fddf51f6",
+            "type": "leaf",
+            "state": {
+              "type": "FANTASY_CALENDAR",
+              "state": {}
+            }
+          },
+          {
+            "id": "7bb94b4dc5c2ff43",
+            "type": "leaf",
+            "state": {
+              "type": "advanced-tables-toolbar",
+              "state": {}
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "obsidian-advanced-slides:Show Slide Preview": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "fantasy-calendar:Open Large Fantasy Calendar": false
+    }
+  },
+  "active": "0885259c49e76288",
+  "lastOpenFiles": [
+    "HTTP Host Header Attacks/HTTP Host Header Attacks.md",
+    "HTTP Request Smuggling/HTTP Request Smuggling.md",
+    "00-Attachments/HTTP 15.png",
+    "00-Attachments/HTTP 14.png",
+    "00-Attachments/HTTP 13.png",
+    "00-Attachments/HTTP 12.png",
+    "00-Attachments/HTTP 11.png",
+    "00-Attachments/HTTP 10.png",
+    "00-Attachments/HTTP 9.png",
+    "00-Attachments/HTTP 8.png",
+    "00-Attachments/HTTP 7.png",
+    "00-Attachments/HTTP 6.png",
+    "Information Disclosure/Information Disclosure.md",
+    "GraphQL API Vulnerabilities/GraphQL API Vulnerabilities.md",
+    "File Uploads/File Uploads.md",
+    "DOM-Based Vulnerabilities/DOM-Based Vulnerabilities.md",
+    "Path Traversal/Path Traversal.md",
+    "OS Command Injection/OS Command Injection.md",
+    "OAuth/OAuth.md",
+    "NoSQL Injections/NoSQL Injections.md",
+    "JWT/JWT.md",
+    "Insecure Deserialization/Insecure Deserialization.md",
+    "Authentication/Authentication.md",
+    "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
+    "Cross-Site Request Forgery (CSRF)/Cross-Site Request Forgery (CSRF).md",
+    "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md",
+    "Clickjacking/Clickjacking.md",
+    "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
+    "API Testing/API Testing.md",
+    "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
+    "README.md",
+    "Web Cache Deception/Web Cache Deception.md",
+    "Web LLM Attacks/Web LLM Attacks.md",
+    "Web Cache Deception",
+    "Web LLM Attacks",
+    "00-Attachments/API Testing.png.~tmp",
+    "API Testing",
+    "Race Conditions/Race Conditions.md",
+    "NoSQL Injections",
+    "Race Conditions",
+    "Prototype Pollution/Prototype Pollution.md",
+    "GraphQL API Vulnerabilities",
+    "Prototype Pollution",
+    "JWT",
+    "File Uploads",
+    "Untitled.canvas"
+  ]
+}

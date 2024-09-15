@@ -1,0 +1,52 @@
+title: Colorize Graph Nodes
+collapse: Yes
+icon: triforce
+
+/* 
+Pill-style colorized tags in preview AND editor panes
+*/
+
+a.tag,
+div:not(.CodeMirror-activeline) > .CodeMirror-line span.cm-hashtag-begin,
+div:not(.CodeMirror-activeline) > .CodeMirror-line span.cm-hashtag-end {
+  background-color: var(--text-accent);
+  border: none;
+  color: white;
+  font-size: 12px;
+  padding: 1px 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 0px 0px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+a.tag:hover {
+  background-color: var(--text-accent-hover);
+  color: white
+}
+
+div:not(.CodeMirror-activeline) > .CodeMirror-line span.cm-hashtag-begin {
+  display: none;
+}
+
+div:not(.CodeMirror-activeline) > .CodeMirror-line span.cm-hashtag-end:before {
+  content: '#';
+}
+
+.tag[href^="#obsidian"] {
+  background-color: #4d3ca6;
+}
+
+.tag[href^="#important"] {
+  background-color: red;
+}
+
+.tag[href^="#complete"] {
+  background-color: green;
+}
+
+.tag[href^="#inprogress"] {
+  background-color: orange;
+}
