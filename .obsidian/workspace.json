@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Insecure Deserialization/Insecure Deserialization.md",
+                "file": "JWT/JWT.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Insecure Deserialization/Insecure Deserialization.md",
+                "file": "JWT/JWT.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Insecure Deserialization/Insecure Deserialization.md",
+                "file": "JWT/JWT.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Insecure Deserialization/Insecure Deserialization.md"
+                "file": "JWT/JWT.md"
               }
             }
           },
@@ -175,6 +175,9 @@
   },
   "active": "0885259c49e76288",
   "lastOpenFiles": [
+    "00-Attachments/JWT 2.png",
+    "00-Attachments/JWT 1.png",
+    "Insecure Deserialization/Insecure Deserialization.md",
     "HTTP Host Header Attacks/HTTP Host Header Attacks.md",
     "HTTP Request Smuggling/HTTP Request Smuggling.md",
     "00-Attachments/HTTP 15.png",
@@ -186,7 +189,6 @@
     "00-Attachments/HTTP 9.png",
     "00-Attachments/HTTP 8.png",
     "00-Attachments/HTTP 7.png",
-    "00-Attachments/HTTP 6.png",
     "Information Disclosure/Information Disclosure.md",
     "GraphQL API Vulnerabilities/GraphQL API Vulnerabilities.md",
     "File Uploads/File Uploads.md",
@@ -196,7 +198,6 @@
     "OAuth/OAuth.md",
     "NoSQL Injections/NoSQL Injections.md",
     "JWT/JWT.md",
-    "Insecure Deserialization/Insecure Deserialization.md",
     "Authentication/Authentication.md",
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
     "Cross-Site Request Forgery (CSRF)/Cross-Site Request Forgery (CSRF).md",
