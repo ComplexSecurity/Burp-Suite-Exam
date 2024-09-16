@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "dfef5602d2f251a1",
+        "id": "28c3cdb17cfd7830",
         "type": "tabs",
         "children": [
           {
-            "id": "0885259c49e76288",
+            "id": "db988ccae32437fc",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "JWT/JWT.md",
-                "mode": "source",
+                "file": "Web LLM Attacks/Web LLM Attacks.md",
+                "mode": "preview",
                 "source": false
               }
             }
@@ -69,7 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 276.50499725341797
+    "width": 271.5026054382324
   },
   "right": {
     "id": "fec3a4ea176c31b0",
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "JWT/JWT.md",
+                "file": "Web LLM Attacks/Web LLM Attacks.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "JWT/JWT.md",
+                "file": "Web LLM Attacks/Web LLM Attacks.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "JWT/JWT.md"
+                "file": "Web LLM Attacks/Web LLM Attacks.md"
               }
             }
           },
@@ -158,7 +158,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -173,8 +174,26 @@
       "fantasy-calendar:Open Large Fantasy Calendar": false
     }
   },
-  "active": "0885259c49e76288",
+  "active": "139f476375acb3ee",
   "lastOpenFiles": [
+    "WebSockets/WebSockets.md",
+    "XML External Entities (XXE)/XML External Entities (XXE).md",
+    "README.md",
+    "().md",
+    "File Uploads/File Uploads.md",
+    "GraphQL API Vulnerabilities/GraphQL API Vulnerabilities.md",
+    "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md",
+    "Web Cache Poisoning/Web Cache Poisoning.md",
+    "Web LLM Attacks/Web LLM Attacks.md",
+    "Prototype Pollution/Prototype Pollution.md",
+    "OAuth/OAuth.md",
+    "00-Attachments/OAuth 2.png",
+    "00-Attachments/OAuth 1.png",
+    "NoSQL Injections/NoSQL Injections.md",
+    "JWT/JWT.md",
+    "00-Attachments/JWT attacks.pdf",
+    "00-Attachments/Insecure Deserialization.jpg",
+    "00-Attachments/JWT attacks.pdf.crdownload",
     "00-Attachments/JWT 2.png",
     "00-Attachments/JWT 1.png",
     "Insecure Deserialization/Insecure Deserialization.md",
@@ -185,42 +204,24 @@
     "00-Attachments/HTTP 13.png",
     "00-Attachments/HTTP 12.png",
     "00-Attachments/HTTP 11.png",
-    "00-Attachments/HTTP 10.png",
-    "00-Attachments/HTTP 9.png",
-    "00-Attachments/HTTP 8.png",
-    "00-Attachments/HTTP 7.png",
     "Information Disclosure/Information Disclosure.md",
-    "GraphQL API Vulnerabilities/GraphQL API Vulnerabilities.md",
-    "File Uploads/File Uploads.md",
     "DOM-Based Vulnerabilities/DOM-Based Vulnerabilities.md",
     "Path Traversal/Path Traversal.md",
     "OS Command Injection/OS Command Injection.md",
-    "OAuth/OAuth.md",
-    "NoSQL Injections/NoSQL Injections.md",
-    "JWT/JWT.md",
     "Authentication/Authentication.md",
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
     "Cross-Site Request Forgery (CSRF)/Cross-Site Request Forgery (CSRF).md",
     "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md",
     "Clickjacking/Clickjacking.md",
     "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
-    "API Testing/API Testing.md",
-    "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
-    "README.md",
-    "Web Cache Deception/Web Cache Deception.md",
-    "Web LLM Attacks/Web LLM Attacks.md",
     "Web Cache Deception",
     "Web LLM Attacks",
     "00-Attachments/API Testing.png.~tmp",
     "API Testing",
-    "Race Conditions/Race Conditions.md",
     "NoSQL Injections",
     "Race Conditions",
-    "Prototype Pollution/Prototype Pollution.md",
     "GraphQL API Vulnerabilities",
     "Prototype Pollution",
-    "JWT",
-    "File Uploads",
     "Untitled.canvas"
   ]
 }

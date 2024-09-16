@@ -59,19 +59,19 @@ You must complete 1 practitioner level lab from each topic:
 - [Web cache poisoning with multiple headers](https://portswigger.net/web-security/web-cache-poisoning/exploiting-design-flaws/lab-web-cache-poisoning-with-multiple-headers)
 - [Information disclosure in version control history](https://portswigger.net/web-security/information-disclosure/exploiting/lab-infoleak-in-version-control-history) ✅
 - [Blind OS command injection with output redirection](https://portswigger.net/web-security/os-command-injection/lab-blind-output-redirection) ✅
-- [Discovering vulnerabilities quickly with targeted scanning](https://portswigger.net/web-security/essential-skills/using-burp-scanner-during-manual-testing/lab-discovering-vulnerabilities-quickly-with-targeted-scanning)
+- [Discovering vulnerabilities quickly with targeted scanning](https://portswigger.net/web-security/essential-skills/using-burp-scanner-during-manual-testing/lab-discovering-vulnerabilities-quickly-with-targeted-scanning) ✅
 # Step 2
 
 You must complete the following labs:
 
 - [Exploiting XSS to capture passwords](https://portswigger.net/web-security/cross-site-scripting/exploiting/lab-capturing-passwords) ✅
 - [Blind SQL injection with out-of-band data exfiltration](https://portswigger.net/web-security/sql-injection/blind/lab-out-of-band-data-exfiltration) ✅
-- [Forced OAuth profile linking]()
+- [Forced OAuth profile linking]() ✅
 - [Brute-forcing a stay-logged-in cookie](https://portswigger.net/web-security/authentication/other-mechanisms/lab-brute-forcing-a-stay-logged-in-cookie) ✅
-- [Exploiting HTTP request smuggling to capture other users' requests]()
-- [SSRF with blacklist-based input filter]()
+- [Exploiting HTTP request smuggling to capture other users' requests]() ✅
+- [SSRF with blacklist-based input filter]() ✅
 - [SQL injection with filter bypass via XML encoding](https://portswigger.net/web-security/sql-injection/lab-sql-injection-with-filter-bypass-via-xml-encoding) ✅
-- [Discovering vulnerabilities quickly with targeted scanning]()
+- [Discovering vulnerabilities quickly with targeted scanning]() ✅
 # Step 3
 
 You must complete 5 mystery lab challenges which will spawn randomized practitioner-level labs where you have to work out how to solve each challenge with no context.

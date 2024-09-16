@@ -9,6 +9,7 @@
   "currentSyncStatusID": 0,
   "refreshBooks": false,
   "booksToRefresh": [],
+  "failedBooks": [],
   "booksIDsMap": {},
   "reimportShowConfirmation": true
 }
