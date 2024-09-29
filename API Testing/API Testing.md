@@ -55,9 +55,9 @@ An API endpoint may support different HTTP methods - test all potential methods 
 
 As an example, the endpoint /api/tasks may support the following:
 
-- GET /api/tasks
-- POST /api/tasks
-- DELETE /api/tasks/1
+- GET /api/tasks - retrieves a list of tasks
+- POST /api/tasks - creates a new task
+- DELETE /api/tasks/1 - deletes a task
 
 >[!warning] 
 >When testing different methods, target low-priority objects to avoid unintended consequences like altering critical items or creating excessive records.
@@ -65,7 +65,7 @@ As an example, the endpoint /api/tasks may support the following:
 Changing the media type for requests can disclose various things including:
 
 - Trigger errors that disclose useful information
-- Bypass flawed defenses
+- Bypass flawed defences
 - Take advantage of differences in processing logic. An API may be secure when handling JSON data but susceptible to injection attacks when dealing with XML.
 
 Use Intruder to find hidden API endpoints by fuzzing the last resource:
@@ -94,6 +94,12 @@ REDACTED...
 # Finding Hidden Parameters
 
 There are numerous tools to help identify hidden parameters. Intruder allows you to automatically discover hidden parameters using a wordlist of common parameter names to replace existing parameters or add new parameters. 
+
+Consider an API for updating user information:
+
+- `PUT /api/user/update`
+
+Try fuzzing update to other functions like `delete` or `add`.
 
 Param Miner allows you to guess up to 65,536 parameter names per request. It automatically guesses names that are relevant to the application, based on information taken from the scope. 
 
@@ -296,8 +302,62 @@ csrf=NpAyxU8sqRJrZ5KvnR0WzVLBYTnV3Kt8&username=../../../../api/internal/v1/users
 
 # Testing for server-side parameter pollution in structured data formats
 
+Consider an app that enables you to edit a profile and apply changes with a request to server-side API. When editing the name, the browser makes a request:
+
+```html
+POST /myaccount
+name=peter
+```
+
+Resulting in:
+
+```json
+PATCH /user/7312/update
+{"name":"peter"}
+```
+
+If you attempt to add the "access_level" parameter to the request as follows, and user input is added to the server-side JSON data without validation or sanitization, it can result in the following:
+
+```html
+POST /myaccount
+name=peter","access_level":"administrator
+```
+
+```json
+PATCH /users/7312/update
+{name="peter","access_level":"administrator"}
+```
+
+A similiar example may be where the client-side user input is in JSON data. When editing the name, it makes:
+
+```html
+POST /myaccount
+{"name": "peter"}
+```
+
+Resulting in:
+
+```bash
+PATCH /users/7312/update
+{"name":"peter"}
+```
+
+Attempting to add the access_level parameter to the request results in:
+
+```bash
+POST /myaccount
+{"name": "peter\",\"access_level\":\"administrator"}
+```
+
+If the user input is decoded, then added to the server-side JSON data without adequate encoding, it results in:
+
+```bash
+PATCH /users/7312/update
+{"name":"peter","access_level":"administrator"}
+```
+
 Review the examples in this section - [https://portswigger.net/web-security/api-testing/server-side-parameter-pollution#testing-for-server-side-parameter-pollution-in-structured-data-formats](https://portswigger.net/web-security/api-testing/server-side-parameter-pollution#testing-for-server-side-parameter-pollution-in-structured-data-formats)
 # Testing with Automated Tools
 
-Burp Scanner automatically detects suspicious input transformation when performing an audit. You can also use the Backslash Powered Scanner plugin to identify server-side injection vulnerabilities.
+Burp Scanner automatically detects suspicious input transformation when performing an audit. You can also use the Backslash Powered Scanner plugin to identify server-side injection vulnerabilities. The scanner classifies inputs as boring, interesting, or vulnerable.
 

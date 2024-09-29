@@ -1,6 +1,6 @@
 {
   "accentColor": "",
-  "cssTheme": "Moonlight",
+  "cssTheme": "Atom",
   "enabledCssSnippets": [
     "supercharged-links-gen",
     "cards",
@@ -12,6 +12,6 @@
     "image-fixer",
     "callouts"
   ],
-  "theme": "moonstone",
+  "theme": "obsidian",
   "baseFontSize": 14
 }
