@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "README.md",
+                "file": "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "README.md",
+                "file": "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "README.md"
+                "file": "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md"
               }
             }
           },
@@ -175,26 +175,27 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "Web LLM Attacks/Web LLM Attacks.md",
+    "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md",
+    "GraphQL API Vulnerabilities/GraphQL API Vulnerabilities.md",
+    "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
+    "README.md",
+    "NoSQL Injections/NoSQL Injections.md",
+    "JWT/JWT.md",
+    "HTTP Host Header Attacks/HTTP Host Header Attacks.md",
+    "File Uploads/File Uploads.md",
     "Web Cache Deception/Web Cache Deception.md",
     "API Testing/API Testing.md",
     "Web Cache Poisoning/Web Cache Poisoning.md",
-    "Web LLM Attacks/Web LLM Attacks.md",
     "Insecure Deserialization/Insecure Deserialization.md",
-    "JWT/JWT.md",
-    "NoSQL Injections/NoSQL Injections.md",
     "OAuth/OAuth.md",
     "HTTP Request Smuggling/HTTP Request Smuggling.md",
-    "HTTP Host Header Attacks/HTTP Host Header Attacks.md",
-    "GraphQL API Vulnerabilities/GraphQL API Vulnerabilities.md",
-    "File Uploads/File Uploads.md",
     "DOM-Based Vulnerabilities/DOM-Based Vulnerabilities.md",
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
     "Cross-Site Request Forgery (CSRF)/Cross-Site Request Forgery (CSRF).md",
-    "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md",
     "Clickjacking/Clickjacking.md",
     "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
     "Authentication/Authentication.md",
-    "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
     "SQL Injection/SQL Injection.md",
     "00-Attachments/SQLi 5.png",
     "00-Attachments/SQLi 4.png",
@@ -205,7 +206,6 @@
     "Server-Side Template Injection (SSTI)/Server-Side Template Injection (SSTI).md",
     "Race Conditions/Race Conditions.md",
     "Prototype Pollution/Prototype Pollution.md",
-    "OS Command Injection/OS Command Injection.md",
     "00-Attachments/OAuth 2.png",
     "00-Attachments/OAuth 1.png",
     "00-Attachments/JWT attacks.pdf",
