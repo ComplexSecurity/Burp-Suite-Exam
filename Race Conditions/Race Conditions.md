@@ -24,19 +24,29 @@ There are many variations of this attack including:
 - Reusing a single CAPTCHA solution
 - Bypassing an anti-brute-force rate limit
 
+>[!info]
+>Limit overruns are a subtype of "time-of-check to time-of-use" (TOCTOU) flaws".
+
 The process of detecting and exploiting limit overrun race conditions is relatively simple. In high-level terms, all you need to do is:
 
 - Identify a single use or rate limited endpoint that has some kind of security impact or other useful purpose.
 - Issue multiple requests to this endpoint in quick succession to see if you can overrun this limit.
 
-The primary challenge is timing the requests so that at least two race windows line up, causing a collision. This window is often just milliseconds and can be even shorter.
+The primary challenge is timing the requests so that at least two race windows line up, causing a collision. This window is often just milliseconds.
 
 >[!info]
 >Sending requests in parallel - [https://portswigger.net/burp/documentation/desktop/tools/repeater/send-group#sending-requests-in-parallel](https://portswigger.net/burp/documentation/desktop/tools/repeater/send-group#sending-requests-in-parallel)
 
-An example lab's purchasing flow contains a race condition that enables you to purchase items for an unintended price. To start, use all of the app's available functionality, including using the PROMO code when purchasing an item.
+Burp Suite can send a group of parallel requests to reduce the impact of one of the factors - network jitter:
 
-Send the following request to Repeater (ensure to have added the expensive jacket into your cart before this step):
+- HTTP/1 - last-byte synchronization technique
+- HTTP/2 - single-packet attack technique
+
+Single-packet allows you to neutralize interference by a single TCP packet to complete request simultaneously. Try to send a large number of requests to help mitigate internal latency (server-side jitter).
+
+An example lab's purchasing flow contains a race condition that enables you to purchase items for an unintended price. To start, use all of the app's available functionality, including using the PROMO code when purchasing an item. Try adding items to cart, checking out and applying the PROMO code.
+
+There may be a POST request for the coupon itself. Send the request to Repeater:
 
 ```bash
 POST /cart/coupon HTTP/2
@@ -46,9 +56,19 @@ REDACTED...
 csrf=UfjDdxlSAUrINBasJasUgfvqCR&coupon=PROMO20
 ```
 
-This request is the request that is used to process the coupon in the purchase order. You can use the "single packet" attack to complete around 20-30 requests simultaneously to see if you can exploit the "race window", which is before the app updates the database with info confirming coupon has already been used in the order.
+Attempt to submit the coupon code multiple times and observe the error message. Try to identify other things such as sending the `GET /cart` request with and without the session token. Try to infer if:
 
-Send around 20 of the same request to Repeater and create a "group" that will include all of the tabs for the same request. Finally, select the option "Send group in parallel (single-packet attack)", and submit the requests.
+- The state of the cart is stored server-side via the session
+- Operations on the cart are keyed on the session token or user ID
+
+Try benchmarking the behaviour by applying a PROMO code and then using a Repeater group to send 20-30 coupon code requests in sequence - does the coupon code work multiple times or just the first?
+
+>[!info]
+>In Repeater, Send --> "Send group (separate connections)".
+
+Try submitting a group of requests in parallel and observe for any differences.
+
+You can use the "single packet" attack to complete around 20-30 requests simultaneously to see if you can exploit the "race window", which is before the app updates the database with info confirming coupon has already been used in the order.
 
 This may take a couple of tries, but eventually you can submit multiple coupons in the same order to purchase an expensive item. The coupon is only supposed to be used once per order, but exploiting a race condition vulnerability allows for a bypass.
 # Hidden Multi-Step Sequences
