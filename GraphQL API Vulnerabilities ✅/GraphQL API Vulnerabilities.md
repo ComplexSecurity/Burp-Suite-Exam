@@ -88,6 +88,8 @@ It shows products have an ID and some are missing (i.e. 3). By querying missing 
         }
     }
 ```
+
+Attempt to run an Introspection query to find any hidden fields are available, particularly for hidden blog posts. If true, add the hidden fields to the initial query to grab the value.
 # Discover Schema Information
 
 Introspection is a built-in GraphQL function that allows you to query for information about the schema, but can also be used to disclose potentially sensitive data. To use it, query the `__schema` field, available on root type of all queries.

