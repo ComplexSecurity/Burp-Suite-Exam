@@ -1,3 +1,5 @@
+#WebSockets #Completed 
+
 ![[WebSockets.jpg]]
 # Recon
 
@@ -39,6 +41,8 @@ If no other input processing or defenses are in place, a PoC XSS attack can be s
 ```
 
 Try to determine if any filtering takes place such as backslash escaping, HTML encoding angle brackets or other forms of encoding. Bypasses may be available. If forward slashes - `/` - are escaped, try using XSS payloads that do not require one such as the img above.
+
+For example, try sending the `<` as a starter alongside other characters such as `>` or keywords like `alert`.  If encoded on the page, try intercepting it and resending the request with the decoded payload if it works.
 # Manipulating Handshake
 
 These vulnerabilities involve design flaws like:
@@ -93,7 +97,6 @@ If vulnerable, then a cross-site request is performed to open a WebSocket and ca
 - Sending WebSocket messages to perform unauthorized actions on behalf of the victim user
 - Sending WebSocket messages to retrieve sensitive data
 - Sometimes, just waiting for incoming messages to arrive containing sensitive data
-
 
 Try interacting with the bot and refreshing the page. If the chat history persists, it likely uses a session cookie to track the live chats. Check if this session token has the SameSite flag. Attempt to resend the READY message  and check if the chat history returns. 
 

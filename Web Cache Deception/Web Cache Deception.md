@@ -1,3 +1,5 @@
+#Web-Cache-Deception #Completed 
+
 ![[Web Cache Deception.jpg]]
 # Overview
 
@@ -61,6 +63,16 @@ Test how the cache maps URL paths to resources by modifying the path to attempt 
 
 >[!info]
 >Burp Scanner detects this as well as Web Cache Deception Scanner.
+
+Try to identify a target endpoint such as an account page containing an API key. Once identified, try adding an arbitrary segment to the base path such as `/my-account/abc` and see if the response is the same - indicates the path is abstracted.
+
+Add static extension such as `/my-account/abc.js` - if cache headers are present, it interprets URL path as sent and caches on JS files. To exploit, host the following in exploit server:
+
+```html
+<script>document.location="https://YOUR-LAB-ID.web-security-academy.net/my-account/wcd.js"</script>
+```
+
+Deliver and then visit the same URL to gain the cached response.
 # Exploiting Delimiter Discrepancies
 
 The `?` character is generally used to separate URL path from query string, but variations can occur between frameworks. Consider:
@@ -69,8 +81,8 @@ The `?` character is generally used to separate URL path from query string, but 
 /profile;foo.css
 ```
 
-- Spring framework uses the `;` character to add parameters (matrix variables)
-- Other frameworks don't, therefore a cache that does not use Spring interprets `;` and everything after part of the path.
+- Spring framework uses the `;` character to add parameters (matrix variables). Origin server in Spring would interpret it as delimiter and truncate it to `/profile`.
+- Other frameworks don't, therefore a cache that does not use Spring interprets `;` and everything after part of the path. If rule stores resposnes for CSS files, it can cache and serve profile info like a CSS file.
 
 If a cache has a rule to store responses for requests ending in .css, it may cache and serve the profile info. For other frameworks like Ruby on Rails:
 
@@ -103,7 +115,29 @@ Construct an exploit that triggers the static extension cache rule - e.g. `/sett
 - Cache interprets path as /settings/users/list;aaa.js
 - Origin server interprets path as /settings/users/list
 
-Origin server returns dynamic profile information stored in the cache. 
+Origin server returns dynamic profile information stored in the cache.
+
+For example, attempt to add an arbitrary path to an account page such as `/my-account/abc` and see if the response is cached - if not, it indicates the origin server does not abstract the path. Try adding a string to the original path such as `/my-accountabc`. If also no caching, use it as a reference to identify characters not used as delimiters.
+
+As an example, you can send the request to Intruder such as:
+
+```json
+/my-account§§abc
+```
+
+Use a list of characters that can be used as delimiters. Look at responses and see what responds with the normal response. To investigate path limiter discrepancies, add the identified characters to the account page and add a file extension:
+
+```json
+/my-account?abc.js
+```
+
+Change the characters until one is cached. To exploit it, use the following:
+
+```html
+<script>document.location="https://YOUR-LAB-ID.web-security-academy.net/my-account;wcd.js"</script>
+```
+
+Deliver to victim and navigate to it to view cached response.
 # Delimiter Decoding Discrepancies
 
 Sites needs to send data in the URL that contains characters that have a special meaning such as delimiters which means encoding them. Some parsers decode them before processing the URL. If decoded, it may be treated as a delimiter, truncating the URL.
@@ -138,7 +172,7 @@ Consider `/static/..2fprofile`:
 Test the origin server normalization by sending a request to a non-cacheable resource with a path traversal sequence and an arbitrary directory at the start of the path. Look for a non-idempotent method like POST (e.g. modify /profile to /aaa/...%2fprofile).
 
 - If response matches base response and returns profile info, it indicates the path is interpreted as /profile. Origin server decodes the slash and resolves the dot segment.
-- If response does not match the base response - e.g. 404 - it indicates the path has been interpreted as `/aaa/..%2fprofile`. Origin server does not decode the slash or esolve the dot segment.
+- If response does not match the base response - e.g. 404 - it indicates the path has been interpreted as `/aaa/..%2fprofile`. Origin server does not decode the slash or resolve the dot segment.
 
 >[!info]
 >When testing for normalization, start by encoding only the second slash in the dot-segment. This is important because some CDNs match the slash following the static directory prefix.

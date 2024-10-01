@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "NoSQL Injections/NoSQL Injections.md",
+                "file": "API Testing/API Testing.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "NoSQL Injections/NoSQL Injections.md",
+                "file": "API Testing/API Testing.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "NoSQL Injections/NoSQL Injections.md",
+                "file": "API Testing/API Testing.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "NoSQL Injections/NoSQL Injections.md"
+                "file": "API Testing/API Testing.md"
               }
             }
           },
@@ -173,15 +173,17 @@
       "fantasy-calendar:Open Large Fantasy Calendar": false
     }
   },
-  "active": "db988ccae32437fc",
+  "active": "139f476375acb3ee",
   "lastOpenFiles": [
-    "API Testing ✅/API Testing.md",
-    "WebSockets ✅/WebSockets.md",
-    "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
-    "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
-    "Web Cache Deception ✅/Web Cache Deception.md",
+    "GraphQL API Vulnerabilities/GraphQL API Vulnerabilities.md",
+    "NoSQL Injections/NoSQL Injections.md",
+    "Web Cache Deception/Web Cache Deception.md",
+    "Web LLM Attacks/Web LLM Attacks.md",
+    "WebSockets/WebSockets.md",
+    "API Testing/API Testing.md",
+    "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md",
+    "File Uploads/File Uploads.md",
     "Web Cache Poisoning/Web Cache Poisoning.md",
-    "Web LLM Attacks ✅/Web LLM Attacks.md",
     "README.md",
     "Race Conditions/Race Conditions.md",
     "JWT/JWT.md",
@@ -189,14 +191,12 @@
     "Information Disclosure/Information Disclosure.md",
     "HTTP Request Smuggling/HTTP Request Smuggling.md",
     "HTTP Host Header Attacks/HTTP Host Header Attacks.md",
-    "File Uploads/File Uploads.md",
     "DOM-Based Vulnerabilities/DOM-Based Vulnerabilities.md",
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
     "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
     "Clickjacking/Clickjacking.md",
     "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
     "Authentication/Authentication.md",
-    "NoSQL Injections/NoSQL Injections.md",
     "OAuth/OAuth.md",
     "Cross-Site Request Forgery (CSRF)/Cross-Site Request Forgery (CSRF).md",
     "SQL Injection/SQL Injection.md",
@@ -213,13 +213,13 @@
     "00-Attachments/JWT attacks.pdf.crdownload",
     "00-Attachments/JWT 2.png",
     "00-Attachments/JWT 1.png",
-    "Web Cache Deception ✅",
-    "Web LLM Attacks ✅",
+    "Web Cache Deception",
+    "Web LLM Attacks",
     "00-Attachments/API Testing.png.~tmp",
-    "API Testing ✅",
+    "API Testing",
     "NoSQL Injections",
     "Race Conditions",
-    "GraphQL API Vulnerabilities ✅",
+    "GraphQL API Vulnerabilities",
     "Prototype Pollution",
     "Untitled.canvas"
   ]

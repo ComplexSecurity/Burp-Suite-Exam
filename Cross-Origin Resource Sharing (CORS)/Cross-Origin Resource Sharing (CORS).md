@@ -1,3 +1,5 @@
+#CORS #Completed 
+
 ![[CORS.webp]]
 # Recon
 
@@ -82,6 +84,8 @@ Some payloads work, some don't:
     </body>
 </html>
 ```
+
+Host them in the exploit server, observe it works yourself and deliver it to the victim. View the access log afterwards.
 # Server-Generated ACAO Header
 
 Some apps provide access to other domains and allow access from any other domains. One way is via reading the Origin header from requests and including a response header stating the requesting origin is allowed. For example:
@@ -216,6 +220,8 @@ The HTML encoding section is as follows:
     request.send()
 </script>
 ```
+
+Attempt to view the exploit yourself and check it works. Deliver to the victim and then view the access log to confirm you receive their account page.
 # Exploiting CSS via CORS
 
 If a site trusts an origin that is XSS vulnerable, an attacker can exploit it to inject JavaScript that uses CORS to extract sensitive information from the site that trusts it. For example:
@@ -258,7 +264,6 @@ HTTP/1.1 200 OK
 Access-Control-Allow-Origin: http://trusted-subdomain.vulnerable-website.com
 Access-Control-Allow-Credentials: true
 ```
-# Subdomain Origin Allowed
 
 The app is only allowing subdomains to send cross-origin requests and view the authenticated response. This is possible because the app is returning the following headers in a response, which contains sensitive information about the logged in user:
 
@@ -266,6 +271,11 @@ The app is only allowing subdomains to send cross-origin requests and view the a
 Access-Control-Allow-Credentials: true
 Access-Control-Allow-Origin: subdomain.vulnerable-app.com
 ```
+# Exploiting TLS CORS Vulnerability
+
+In an example, an API key may appear in the account page via an AJAX request to `/accountDetails` with the response containing the ACAC header. Try adding the Origin header with a subdomain value. 
+
+If origin is reflected in ACAO header, it confirms CORS allows access from subdomains via both HTTPS and HTTP (if subdomain is HTTP). Look for any other functionality on the site like a stock checker or for anything that may be using HTTP and vulnerable to XSS such as a productID parameter.
 
 If the subdomain contains an XSS vulnerability, you can inject a script that will submit a request to the main application and send the response to the attacker’s server. This will work since the subdomain is allowed to view the authenticated responses from the main application.
 
