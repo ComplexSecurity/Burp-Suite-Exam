@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md",
+                "file": "Server-Side Template Injection (SSTI)/Server-Side Template Injection (SSTI).md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md",
+                "file": "Server-Side Template Injection (SSTI)/Server-Side Template Injection (SSTI).md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md",
+                "file": "Server-Side Template Injection (SSTI)/Server-Side Template Injection (SSTI).md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md"
+                "file": "Server-Side Template Injection (SSTI)/Server-Side Template Injection (SSTI).md"
               }
             }
           },
@@ -165,6 +165,7 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "Server-Side Request Forgery (SSRF) ✅/Server-Side Request Forgery (SSRF).md",
     "Web Cache Poisoning/Web Cache Poisoning.md",
     "Web Cache Deception ✅/Web Cache Deception.md",
     "OAuth ✅/OAuth.md",
@@ -193,7 +194,6 @@
     "Clickjacking/Clickjacking.md",
     "Authentication/Authentication.md",
     "Cross-Site Request Forgery (CSRF)/Cross-Site Request Forgery (CSRF).md",
-    "SQL Injection/SQL Injection.md",
     "00-Attachments/SQLi 5.png",
     "00-Attachments/SQLi 4.png",
     "00-Attachments/SQLi 3.png",
