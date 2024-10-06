@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Server-Side Template Injection (SSTI)/Server-Side Template Injection (SSTI).md",
+                "file": "XML External Entities (XXE)/XML External Entities (XXE).md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Server-Side Template Injection (SSTI)/Server-Side Template Injection (SSTI).md",
+                "file": "XML External Entities (XXE)/XML External Entities (XXE).md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Server-Side Template Injection (SSTI)/Server-Side Template Injection (SSTI).md",
+                "file": "XML External Entities (XXE)/XML External Entities (XXE).md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Server-Side Template Injection (SSTI)/Server-Side Template Injection (SSTI).md"
+                "file": "XML External Entities (XXE)/XML External Entities (XXE).md"
               }
             }
           },
@@ -165,6 +165,12 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "00-Attachments/XXE Thumbnail.jpeg",
+    "00-Attachments/XXE Thumbnail.jpeg.crdownload",
+    "00-Attachments/XXE Thumbnail.jpg",
+    "00-Attachments/XXE Thumbnail.jpg.crdownload",
+    "Server-Side Template Injection (SSTI) ✅/Server-Side Template Injection (SSTI).md",
+    "00-Attachments/SSTI Path.png",
     "Server-Side Request Forgery (SSRF) ✅/Server-Side Request Forgery (SSRF).md",
     "Web Cache Poisoning/Web Cache Poisoning.md",
     "Web Cache Deception ✅/Web Cache Deception.md",
@@ -192,25 +198,19 @@
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
     "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
     "Clickjacking/Clickjacking.md",
-    "Authentication/Authentication.md",
-    "Cross-Site Request Forgery (CSRF)/Cross-Site Request Forgery (CSRF).md",
     "00-Attachments/SQLi 5.png",
     "00-Attachments/SQLi 4.png",
     "00-Attachments/SQLi 3.png",
     "00-Attachments/SQLi 2.png",
     "00-Attachments/SQLi 1.png",
     "00-Attachments/OAuth 2.png",
-    "00-Attachments/OAuth 1.png",
     "00-Attachments/JWT attacks.pdf",
-    "00-Attachments/Insecure Deserialization.jpg",
     "00-Attachments/JWT attacks.pdf.crdownload",
     "Web Cache Deception ✅",
     "Web LLM Attacks ✅",
     "00-Attachments/API Testing.png.~tmp",
     "API Testing ✅",
     "NoSQL Injections ✅",
-    "Race Conditions ✅",
-    "GraphQL API Vulnerabilities ✅",
     "Untitled.canvas"
   ]
 }
