@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Race Conditions/Race Conditions.md",
+                "file": "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Race Conditions/Race Conditions.md",
+                "file": "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Race Conditions/Race Conditions.md",
+                "file": "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Race Conditions/Race Conditions.md"
+                "file": "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md"
               }
             }
           },
@@ -134,14 +134,6 @@
             "type": "leaf",
             "state": {
               "type": "calendar",
-              "state": {}
-            }
-          },
-          {
-            "id": "834a0616fddf51f6",
-            "type": "leaf",
-            "state": {
-              "type": "FANTASY_CALENDAR",
               "state": {}
             }
           },
@@ -168,25 +160,29 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "obsidian-advanced-slides:Show Slide Preview": false,
-      "table-editor-obsidian:Advanced Tables Toolbar": false,
-      "fantasy-calendar:Open Large Fantasy Calendar": false
+      "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
-    "JWT/JWT.md",
-    "API Testing/API Testing.md",
-    "GraphQL API Vulnerabilities/GraphQL API Vulnerabilities.md",
-    "NoSQL Injections/NoSQL Injections.md",
-    "Web Cache Deception/Web Cache Deception.md",
-    "Web LLM Attacks/Web LLM Attacks.md",
-    "WebSockets/WebSockets.md",
-    "Cross-Origin Resource Sharing (CORS)/Cross-Origin Resource Sharing (CORS).md",
-    "File Uploads/File Uploads.md",
     "Web Cache Poisoning/Web Cache Poisoning.md",
+    "Web Cache Deception ✅/Web Cache Deception.md",
+    "OAuth ✅/OAuth.md",
+    "NoSQL Injections ✅/NoSQL Injections.md",
+    "JWT ✅/JWT.md",
+    "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
+    "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
+    "API Testing ✅/API Testing.md",
+    "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
+    "OS Command Injection/OS Command Injection.md",
+    "00-Attachments/Secret1.png",
+    "Race Conditions ✅/Race Conditions.md",
+    "00-Attachments/Pass Reset Collision.png",
+    "00-Attachments/Pass Reset Collision.png.crdownload",
+    "Web LLM Attacks ✅/Web LLM Attacks.md",
+    "WebSockets ✅/WebSockets.md",
+    "File Uploads/File Uploads.md",
     "README.md",
-    "Race Conditions/Race Conditions.md",
     "Insecure Deserialization/Insecure Deserialization.md",
     "Information Disclosure/Information Disclosure.md",
     "HTTP Request Smuggling/HTTP Request Smuggling.md",
@@ -195,9 +191,7 @@
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
     "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
     "Clickjacking/Clickjacking.md",
-    "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
     "Authentication/Authentication.md",
-    "OAuth/OAuth.md",
     "Cross-Site Request Forgery (CSRF)/Cross-Site Request Forgery (CSRF).md",
     "SQL Injection/SQL Injection.md",
     "00-Attachments/SQLi 5.png",
@@ -205,22 +199,18 @@
     "00-Attachments/SQLi 3.png",
     "00-Attachments/SQLi 2.png",
     "00-Attachments/SQLi 1.png",
-    "Server-Side Request Forgery (SSRF)/Server-Side Request Forgery (SSRF).md",
     "00-Attachments/OAuth 2.png",
     "00-Attachments/OAuth 1.png",
     "00-Attachments/JWT attacks.pdf",
     "00-Attachments/Insecure Deserialization.jpg",
     "00-Attachments/JWT attacks.pdf.crdownload",
-    "00-Attachments/JWT 2.png",
-    "00-Attachments/JWT 1.png",
-    "Web Cache Deception",
-    "Web LLM Attacks",
+    "Web Cache Deception ✅",
+    "Web LLM Attacks ✅",
     "00-Attachments/API Testing.png.~tmp",
-    "API Testing",
-    "NoSQL Injections",
-    "Race Conditions",
-    "GraphQL API Vulnerabilities",
-    "Prototype Pollution",
+    "API Testing ✅",
+    "NoSQL Injections ✅",
+    "Race Conditions ✅",
+    "GraphQL API Vulnerabilities ✅",
     "Untitled.canvas"
   ]
 }
