@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "XML External Entities (XXE)/XML External Entities (XXE).md",
+                "file": "Insecure Deserialization/Insecure Deserialization.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "XML External Entities (XXE)/XML External Entities (XXE).md",
+                "file": "Insecure Deserialization/Insecure Deserialization.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "XML External Entities (XXE)/XML External Entities (XXE).md",
+                "file": "Insecure Deserialization/Insecure Deserialization.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "XML External Entities (XXE)/XML External Entities (XXE).md"
+                "file": "Insecure Deserialization/Insecure Deserialization.md"
               }
             }
           },
@@ -165,6 +165,9 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "HTTP Host Header Attacks ✅/HTTP Host Header Attacks.md",
+    "Path Traversal/Path Traversal.md",
+    "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
     "00-Attachments/XXE Thumbnail.jpeg",
     "00-Attachments/XXE Thumbnail.jpeg.crdownload",
     "00-Attachments/XXE Thumbnail.jpg",
@@ -193,17 +196,14 @@
     "Insecure Deserialization/Insecure Deserialization.md",
     "Information Disclosure/Information Disclosure.md",
     "HTTP Request Smuggling/HTTP Request Smuggling.md",
-    "HTTP Host Header Attacks/HTTP Host Header Attacks.md",
     "DOM-Based Vulnerabilities/DOM-Based Vulnerabilities.md",
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
     "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
-    "Clickjacking/Clickjacking.md",
     "00-Attachments/SQLi 5.png",
     "00-Attachments/SQLi 4.png",
     "00-Attachments/SQLi 3.png",
     "00-Attachments/SQLi 2.png",
     "00-Attachments/SQLi 1.png",
-    "00-Attachments/OAuth 2.png",
     "00-Attachments/JWT attacks.pdf",
     "00-Attachments/JWT attacks.pdf.crdownload",
     "Web Cache Deception ✅",
