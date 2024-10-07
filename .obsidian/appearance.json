@@ -10,7 +10,8 @@
     "embed-responsive",
     "extended-colorscheme",
     "image-fixer",
-    "callouts"
+    "callouts",
+    "youtube"
   ],
   "theme": "obsidian",
   "baseFontSize": 14
