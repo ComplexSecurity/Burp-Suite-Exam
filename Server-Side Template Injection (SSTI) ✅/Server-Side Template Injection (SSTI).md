@@ -1,3 +1,5 @@
+#SSTI #Completed
+
 ![[SSTI.webp]]
 # Server-Side Template Injection
 

@@ -1,3 +1,5 @@
+#XXE #Completed
+
 ![[XXE Thumbnail.jpeg]]
 # XML External Entities
 

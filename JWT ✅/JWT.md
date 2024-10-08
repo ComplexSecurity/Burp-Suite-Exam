@@ -1,3 +1,5 @@
+#JWT #Completed
+
 ![[JWT.avif]]
 # JSON Web Tokens (JWTs)
 

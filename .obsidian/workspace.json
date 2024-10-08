@@ -13,8 +13,8 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Insecure Deserialization/Insecure Deserialization.md",
-                "mode": "source",
+                "file": "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
+                "mode": "preview",
                 "source": false
               }
             }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Insecure Deserialization/Insecure Deserialization.md",
+                "file": "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Insecure Deserialization/Insecure Deserialization.md",
+                "file": "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Insecure Deserialization/Insecure Deserialization.md"
+                "file": "XML External Entities (XXE) ✅/XML External Entities (XXE).md"
               }
             }
           },
@@ -163,40 +163,40 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "db988ccae32437fc",
+  "active": "139f476375acb3ee",
   "lastOpenFiles": [
+    "WebSockets ✅/WebSockets.md",
+    "Web LLM Attacks ✅/Web LLM Attacks.md",
+    "Web Cache Deception ✅/Web Cache Deception.md",
+    "Server-Side Template Injection (SSTI) ✅/Server-Side Template Injection (SSTI).md",
+    "Server-Side Request Forgery (SSRF) ✅/Server-Side Request Forgery (SSRF).md",
+    "Race Conditions ✅/Race Conditions.md",
+    "OAuth ✅/OAuth.md",
+    "NoSQL Injections ✅/NoSQL Injections.md",
+    "JWT ✅/JWT.md",
+    "Insecure Deserialization ✅/Insecure Deserialization.md",
     "HTTP Host Header Attacks ✅/HTTP Host Header Attacks.md",
+    "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
+    "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
+    "API Testing ✅/API Testing.md",
+    "DOM-Based Vulnerabilities 📕/DOM-Based Vulnerabilities.md",
     "Path Traversal/Path Traversal.md",
     "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
     "00-Attachments/XXE Thumbnail.jpeg",
     "00-Attachments/XXE Thumbnail.jpeg.crdownload",
     "00-Attachments/XXE Thumbnail.jpg",
     "00-Attachments/XXE Thumbnail.jpg.crdownload",
-    "Server-Side Template Injection (SSTI) ✅/Server-Side Template Injection (SSTI).md",
     "00-Attachments/SSTI Path.png",
-    "Server-Side Request Forgery (SSRF) ✅/Server-Side Request Forgery (SSRF).md",
     "Web Cache Poisoning/Web Cache Poisoning.md",
-    "Web Cache Deception ✅/Web Cache Deception.md",
-    "OAuth ✅/OAuth.md",
-    "NoSQL Injections ✅/NoSQL Injections.md",
-    "JWT ✅/JWT.md",
-    "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
-    "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
-    "API Testing ✅/API Testing.md",
     "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
     "OS Command Injection/OS Command Injection.md",
     "00-Attachments/Secret1.png",
-    "Race Conditions ✅/Race Conditions.md",
     "00-Attachments/Pass Reset Collision.png",
     "00-Attachments/Pass Reset Collision.png.crdownload",
-    "Web LLM Attacks ✅/Web LLM Attacks.md",
-    "WebSockets ✅/WebSockets.md",
     "File Uploads/File Uploads.md",
     "README.md",
-    "Insecure Deserialization/Insecure Deserialization.md",
     "Information Disclosure/Information Disclosure.md",
     "HTTP Request Smuggling/HTTP Request Smuggling.md",
-    "DOM-Based Vulnerabilities/DOM-Based Vulnerabilities.md",
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
     "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
     "00-Attachments/SQLi 5.png",

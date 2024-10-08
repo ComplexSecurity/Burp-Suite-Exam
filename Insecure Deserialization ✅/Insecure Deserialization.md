@@ -1,3 +1,5 @@
+#Insecure-Deserialization #Completed
+
 ![[Insecure Deserialization.jpg]]
 # Insecure Deserialization
 
@@ -365,12 +367,26 @@ New lines may need to be removed using truncation:
 ```bash
 echo "[PAYLOAD]" | tr -d "\n\r"
 ```
+# Developing Custom Gadget Chains
 
+To build a custom gadget, it's ideal to have access to the source code. The first step is to identify a class that contains a magic method invoked during deserialization. Assess the code the magic method executes and see if it does anything dangerous with user controllable attributes.
 
+If not directly exploitable, it can be used as the kick off gadget. Study any methods the kick off gadget invokes. If none of them do something dangerous with data you control, look closer at each of the methods that they subsequently invoke and so on.
 
+Once you find how to successfully construct a gadget chain within the app code, the next step is to create a serialized object containing the payload. This is a case of studying the class declaration in the source code and creating a valid serialized object with the appropriate values required for exploitation.
 
+Working with binary formats like Java deserialization objects can be difficult. When making minor changes to an existing object, you may be comfortable working directly with the bytes. When making significant changes, it is much simpler to write your own code in the target language to generate and serialize the data yourself.
+# PHAR Deserialization
 
+In PHP, it's possible to exploit deserialization if there is no use of the `unserialize()` method. It provides several URL-style wrappers that can be used for handling different protocols when accessing files paths such as the `phar://` wrapper which provides a stream interface for accessing PHP Archive files.
 
+PHAR manifest files contains serialized metadata. If you perform any filesystem operations on a `phar://` stream, the metadata is implicitly deserialized. It means a `phar://` stream can potentially be a vector.
+
+In case of obvious dangerous filesystem methods like `include()` or `fopen()`, sites are likely to have implemented counter-measures to reduce the potential for them to be used maliciously. Methods such as `file_exists()` are less likely to be as protected.
+
+The technique requires the uploading of PHAR to the server such as via an image upload.  If you can create a polyglot file with a PHAR masquerading as a simple JPG, you can bypass the site's validation checks. If you can then force a site to load the polyglot from a `phar://` stream, any harmful data will be deserialized.
+
+As long as the class of the object is supported by the site, both the `__wakeup()` and `__destruct()` magic methods can be invoked in this way, allowing you to potentially kick off a gadget chain.
 
 
 

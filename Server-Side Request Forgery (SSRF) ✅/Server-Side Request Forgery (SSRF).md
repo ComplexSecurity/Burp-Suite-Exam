@@ -1,3 +1,5 @@
+#SSRF #Completed
+
 ![[SSRF.jpg]]
 # Server-Side Request Forgery (SSRF)
 
