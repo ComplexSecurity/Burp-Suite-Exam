@@ -13,8 +13,8 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
-                "mode": "preview",
+                "file": "HTTP Request Smuggling/HTTP Request Smuggling.md",
+                "mode": "source",
                 "source": false
               }
             }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
+                "file": "HTTP Request Smuggling/HTTP Request Smuggling.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
+                "file": "HTTP Request Smuggling/HTTP Request Smuggling.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "XML External Entities (XXE) ✅/XML External Entities (XXE).md"
+                "file": "HTTP Request Smuggling/HTTP Request Smuggling.md"
               }
             }
           },
@@ -163,8 +163,26 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "139f476375acb3ee",
+  "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "00-Attachments/Admin Token.png",
+    "00-Attachments/Foo Bar.png",
+    "00-Attachments/First Split.png",
+    "00-Attachments/GET Headers.png",
+    "00-Attachments/GET Split.png",
+    "00-Attachments/Test GET.png",
+    "00-Attachments/Test Search.png",
+    "00-Attachments/FooBar HTTP2.png",
+    "00-Attachments/Exploit Server.png",
+    "00-Attachments/Offsite Redirect.png",
+    "00-Attachments/Trailing Slash.png",
+    "Clickjacking ✅/Clickjacking.md",
+    "Information Disclosure/Information Disclosure.md",
+    "HTTP Request Smuggling/HTTP Request Smuggling.md",
+    "Prototype Pollution/Prototype Pollution.md",
+    "Web Cache Poisoning/Web Cache Poisoning.md",
+    "DOM-Based Vulnerabilities ✅/DOM-Based Vulnerabilities.md",
+    "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
     "WebSockets ✅/WebSockets.md",
     "Web LLM Attacks ✅/Web LLM Attacks.md",
     "Web Cache Deception ✅/Web Cache Deception.md",
@@ -179,31 +197,13 @@
     "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
     "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
     "API Testing ✅/API Testing.md",
-    "DOM-Based Vulnerabilities 📕/DOM-Based Vulnerabilities.md",
     "Path Traversal/Path Traversal.md",
-    "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
-    "00-Attachments/XXE Thumbnail.jpeg",
     "00-Attachments/XXE Thumbnail.jpeg.crdownload",
-    "00-Attachments/XXE Thumbnail.jpg",
     "00-Attachments/XXE Thumbnail.jpg.crdownload",
-    "00-Attachments/SSTI Path.png",
-    "Web Cache Poisoning/Web Cache Poisoning.md",
     "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
     "OS Command Injection/OS Command Injection.md",
-    "00-Attachments/Secret1.png",
-    "00-Attachments/Pass Reset Collision.png",
     "00-Attachments/Pass Reset Collision.png.crdownload",
     "File Uploads/File Uploads.md",
-    "README.md",
-    "Information Disclosure/Information Disclosure.md",
-    "HTTP Request Smuggling/HTTP Request Smuggling.md",
-    "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
-    "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
-    "00-Attachments/SQLi 5.png",
-    "00-Attachments/SQLi 4.png",
-    "00-Attachments/SQLi 3.png",
-    "00-Attachments/SQLi 2.png",
-    "00-Attachments/SQLi 1.png",
     "00-Attachments/JWT attacks.pdf",
     "00-Attachments/JWT attacks.pdf.crdownload",
     "Web Cache Deception ✅",
