@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "HTTP Request Smuggling/HTTP Request Smuggling.md",
+                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "HTTP Request Smuggling/HTTP Request Smuggling.md",
+                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "HTTP Request Smuggling/HTTP Request Smuggling.md",
+                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "HTTP Request Smuggling/HTTP Request Smuggling.md"
+                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md"
               }
             }
           },
@@ -163,7 +163,7 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "db988ccae32437fc",
+  "active": "139f476375acb3ee",
   "lastOpenFiles": [
     "00-Attachments/New GPOST.png",
     "00-Attachments/G0POST U.png",
@@ -178,7 +178,7 @@
     "00-Attachments/GPOST.png",
     "Clickjacking ✅/Clickjacking.md",
     "Information Disclosure/Information Disclosure.md",
-    "HTTP Request Smuggling/HTTP Request Smuggling.md",
+    "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
     "Prototype Pollution/Prototype Pollution.md",
     "Web Cache Poisoning/Web Cache Poisoning.md",
     "DOM-Based Vulnerabilities ✅/DOM-Based Vulnerabilities.md",
