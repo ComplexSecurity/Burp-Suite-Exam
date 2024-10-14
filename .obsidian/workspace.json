@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
+                "file": "Prototype Pollution/Prototype Pollution.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
+                "file": "Prototype Pollution/Prototype Pollution.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
+                "file": "Prototype Pollution/Prototype Pollution.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md"
+                "file": "Prototype Pollution/Prototype Pollution.md"
               }
             }
           },
@@ -163,22 +163,22 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "139f476375acb3ee",
+  "active": "db988ccae32437fc",
   "lastOpenFiles": [
-    "00-Attachments/New GPOST.png",
-    "00-Attachments/G0POST U.png",
-    "00-Attachments/GPOST Poison.png",
-    "00-Attachments/TECL.png",
-    "00-Attachments/TE Obfuscation.png",
-    "00-Attachments/ETE.png",
-    "00-Attachments/GPOST Works.png",
-    "00-Attachments/G0POST Method.png",
-    "00-Attachments/G0POST.png",
-    "00-Attachments/Detection2.png",
-    "00-Attachments/GPOST.png",
-    "Clickjacking ✅/Clickjacking.md",
+    "00-Attachments/sanitization.png",
+    "00-Attachments/stripped.png",
+    "00-Attachments/letscript.png",
+    "00-Attachments/params.png",
+    "00-Attachments/KeySanitize.png",
+    "00-Attachments/deparam2.png",
+    "00-Attachments/newobj.png",
+    "00-Attachments/1234.png",
+    "00-Attachments/propx.png",
+    "00-Attachments/myobj.png",
+    "00-Attachments/Error.png",
     "Information Disclosure/Information Disclosure.md",
     "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
+    "Clickjacking ✅/Clickjacking.md",
     "Prototype Pollution/Prototype Pollution.md",
     "Web Cache Poisoning/Web Cache Poisoning.md",
     "DOM-Based Vulnerabilities ✅/DOM-Based Vulnerabilities.md",
