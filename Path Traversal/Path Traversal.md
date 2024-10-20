@@ -1,4 +1,4 @@
-![[Path Traversal.png]]
++![[Path Traversal.png]]
 # Recon
 
 Identify any app functionality that is likely to involve retrieval of data from a server's filesystem. Look for any input fields that reference a file or directory name, or that contain any file extensions such as:
