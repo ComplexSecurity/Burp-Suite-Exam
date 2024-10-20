@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Information Disclosure ✅/Information Disclosure.md",
+                "file": "File Uploads/File Uploads.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Information Disclosure ✅/Information Disclosure.md",
+                "file": "File Uploads/File Uploads.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Information Disclosure ✅/Information Disclosure.md",
+                "file": "File Uploads/File Uploads.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Information Disclosure ✅/Information Disclosure.md"
+                "file": "File Uploads/File Uploads.md"
               }
             }
           },
@@ -165,21 +165,23 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "00-Attachments/Shell Extension.png",
+    "00-Attachments/HTAccess.png",
+    "00-Attachments/Apache Disclosed.png",
+    "00-Attachments/Encoded.png",
+    "00-Attachments/Filename.png",
+    "00-Attachments/Content-Type JPEG.png",
+    "00-Attachments/p0wnyshell.png",
+    "OS Command Injection/OS Command Injection.md",
+    "Path Traversal/Path Traversal.md",
+    "File Uploads/File Uploads.md",
+    "Information Disclosure ✅/Information Disclosure.md",
     "00-Attachments/Admin Pass.png",
     "wget.exe",
     "00-Attachments/Custom IP.png",
     "00-Attachments/Database Pass.png",
     "00-Attachments/Secret Key.png",
-    "00-Attachments/Apache Struts.png",
-    "Path Traversal/Path Traversal.md",
     "Prototype Pollution ✅/Prototype Pollution.md",
-    "00-Attachments/ENV.png",
-    "00-Attachments/Issue.png",
-    "00-Attachments/Change Email.png",
-    "00-Attachments/JSON Spaces.png",
-    "00-Attachments/No Reflection.png",
-    "00-Attachments/POST JSON.png",
-    "Information Disclosure ✅/Information Disclosure.md",
     "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
     "Clickjacking ✅/Clickjacking.md",
     "Web Cache Poisoning/Web Cache Poisoning.md",
@@ -202,9 +204,7 @@
     "00-Attachments/XXE Thumbnail.jpeg.crdownload",
     "00-Attachments/XXE Thumbnail.jpg.crdownload",
     "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
-    "OS Command Injection/OS Command Injection.md",
     "00-Attachments/Pass Reset Collision.png.crdownload",
-    "File Uploads/File Uploads.md",
     "00-Attachments/JWT attacks.pdf",
     "00-Attachments/JWT attacks.pdf.crdownload",
     "Web Cache Deception ✅",
