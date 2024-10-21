@@ -212,3 +212,41 @@ Another way is to simply inject the malicious code after the beginning bytes of 
 ![[File Upload 3.png]]
 
 ![[File Upload 4.png]]
+# File Upload Race Conditions
+
+Modern frameworks are more hardened and don't generally allow uploaded files directly to their intended destination on the filesystem. They may take precautions like uploading to a temp, sandboxed directory and randomizing the name to avoid overwriting existing files.
+
+They may then perform validation on the temporary file and only transfer it over once deemed safe. 
+
+Devs sometimes implement their own processing of file uploads independently which is fairly complex and can introduce race conditions that allow a complete bypass of robust validation.
+
+Some sites upload the file directly to the main filesystem and then remove it if it does not pass validation - typical on sites that rely on AV to check for malware. It may only take milliseconds, but an attacker can still execute it in that time.
+
+Similiar race conditions can occur in functions allowing you to upload files by providing a URL. If so, the server fetches the file over the internet and creates a local copy before performing any validation. As the file loads using HTTP, devs are unable to use the framework mechanisms for securely validating files.
+
+They may manually create their own processes for temporarily storing and validating the file. 
+
+For example, if the file is loaded into a temp directory with a random name, it should be impossible to exploit any race conditions. If you don't know the directory name, you are unable to request the file in order to trigger it. However, if the random directory name is generated using pseudo-random functions like `uniqid()`, it can be brute forced.
+
+Try extending the amount of time taken to process the file by uploading a larger file. If it gets processed in chunks, you may take advantage of it by creating a malicious file with the payload at the start followed by a large number of padded bytes.
+# File Upload without Remote Code Execution
+
+If script execution is not possible, you may be able to upload scripts for client side attacks. If you can upload HTML files or SVG images, you can use `<script>` tags to create stored XSS payloads. If the uploaded file then appears on a page that is visited by other users, their browser will execute the script when it tries to render the page.
+
+>[!info]
+>Due to same-origin policy restrictions, these attacks only work if the uploaded file is served from the same origin.
+
+If the uploaded file seems to be stored and served securely, the last resort is to try exploiting vulnerabilities specific to the parsing or processing of different file formats. If you know the server parses XML-based files, such as Microsoft Office `.doc` or `.xls` files, it may be a potential vector for XXE.
+# Uploading Files via PUT
+
+Some servers may be configured to use PUT requests. If defenses are not in place, it can provide alternative means of uploading malicious files, even when the upload function is not available via the web interface:
+
+```http
+PUT /images/exploit.php HTTP/1.1
+Host: vulnerable-website.com
+Content-Type: application/x-httpd-php
+Content-Length: 49
+
+<?php echo file_get_contents('/path/to/file'); ?>
+```
+
