@@ -16,7 +16,9 @@
                 "file": "File Uploads/File Uploads.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "icon": "lucide-file",
+              "title": "File Uploads"
             }
           }
         ]
@@ -39,7 +41,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
             }
           },
           {
@@ -54,7 +58,9 @@
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-search",
+              "title": "Search"
             }
           },
           {
@@ -62,7 +68,9 @@
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {}
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
             }
           }
         ]
@@ -93,7 +101,9 @@
                 "searchQuery": "",
                 "backlinkCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for File Uploads"
             }
           },
           {
@@ -105,7 +115,9 @@
                 "file": "File Uploads/File Uploads.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from File Uploads"
             }
           },
           {
@@ -116,7 +128,9 @@
               "state": {
                 "sortOrder": "frequency",
                 "useHierarchy": true
-              }
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
             }
           },
           {
@@ -126,7 +140,9 @@
               "type": "outline",
               "state": {
                 "file": "File Uploads/File Uploads.md"
-              }
+              },
+              "icon": "lucide-list",
+              "title": "Outline of File Uploads"
             }
           },
           {
@@ -134,7 +150,9 @@
             "type": "leaf",
             "state": {
               "type": "calendar",
-              "state": {}
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
             }
           },
           {
@@ -142,7 +160,9 @@
             "type": "leaf",
             "state": {
               "type": "advanced-tables-toolbar",
-              "state": {}
+              "state": {},
+              "icon": "spreadsheet",
+              "title": "Advanced Tables"
             }
           }
         ],
@@ -165,22 +185,22 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "00-Attachments/Payload Exec.png",
+    "00-Attachments/Polyglot.png",
+    "00-Attachments/Comment PHP.png",
+    "00-Attachments/Comment Pwned.png",
+    "00-Attachments/Exiftool.png",
+    "00-Attachments/Null Byte.png",
+    "00-Attachments/URL Encoded.png",
+    "00-Attachments/PHP JPG.png",
+    "00-Attachments/Capital.png",
     "00-Attachments/Shell Extension.png",
     "00-Attachments/HTAccess.png",
-    "00-Attachments/Apache Disclosed.png",
-    "00-Attachments/Encoded.png",
-    "00-Attachments/Filename.png",
-    "00-Attachments/Content-Type JPEG.png",
-    "00-Attachments/p0wnyshell.png",
     "OS Command Injection/OS Command Injection.md",
     "Path Traversal/Path Traversal.md",
     "File Uploads/File Uploads.md",
     "Information Disclosure ✅/Information Disclosure.md",
-    "00-Attachments/Admin Pass.png",
     "wget.exe",
-    "00-Attachments/Custom IP.png",
-    "00-Attachments/Database Pass.png",
-    "00-Attachments/Secret Key.png",
     "Prototype Pollution ✅/Prototype Pollution.md",
     "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
     "Clickjacking ✅/Clickjacking.md",

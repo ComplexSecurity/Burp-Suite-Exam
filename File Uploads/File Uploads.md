@@ -137,61 +137,78 @@ If successfully uploaded, the file is added to the specific directory. Try uploa
 ![[Shell Extension.png]]
 # Obfuscated File Extensions
 
+Some exhaustive blacklists can be bypassed using obfuscation techniques. For example, it may be case sensitive and fails to recognize `.pHp` as `.php`. If the code that maps the file extension to a MIME type is not case sensitive, you can sneak malicious PHP files past validation. Some other techniques include:
 
+- Provide multiple extensions - depending on algorithm used to parse the filename, the following may be interpreted as a PHP or JPG image (`exploit.php.jpg`).
+- Add trailing characters - some components will strip/ignore trailing whitespace, dots and such (`exploit.php.`).
+- Try using URL encoding or double URL encoding for dots, forward slashes, and backward slashes. If values are not decoded when validating file extension, but later decoded server-side, you can upload files (`exploit%2e.php`).
+- Add semicolons or URL encoded null byte characters before file extension. If validation is written in PHP or Java, but the server processes the file using lower-level functions in C/C++, it can cause discrepancies in what's treated as the end of the file (`exploit.asp;.jpg`) or (`exploit.asp%00.jpg`).
+- Try using multibyte encoding characters which may be converted to null bytes and dots after unicode conversion or normalization. Sequences like `xC0 x2E`, `xC4 xAE` or `xC0 xAE` may be translated to `x2E` if the filename parsed as a UTF-8 string, but then converted to ASCII characters before used in a path.
 
+Other defenses may strip or replace dangerous extensions. If the transformation does not get applied recursively, try positioning the prohibited string in a way that removing it still leaves behind a valid file extension (e.g. `exploit.p.php.hp).
 
+For example, try uploading a web shell - it may return stating only JPGs and PNGs are allowed. If so, try various things such as using a capital letter:
 
+![[Capital.png]]
 
+Or, try using multiple extensions:
 
+![[PHP JPG.png]]
 
+It may succeed but it may not be interpreted as a PHP script. Also try using URL and double URL encoding:
 
+![[URL Encoded.png]]
 
+If no success, try adding a null byte:
 
+![[Null Byte.png]]
 
+It may work as it bypasses the filters and when it gets saved, the null byte terminates there, removing anything afterwards.
 
+# Flawed Validation
 
+More secure servers may verify the contents of the file actually match what is expected. For example, the server may try to verify certain intrinsic properties of an image like dimensions. Certain file types may always contain a specific sequence of bytes in their header or footer.
 
+They are used like a fingerprint to determine whether the contents match the expected type - JPEG files always begin with the bytes `FF D8 FF`. Using tools, you can create a polyglot JPEG file containing malicious code within its metadata.
 
+For example, try using Exiftool to inspect a JPEG or PNG file:
 
+>[!powershell]
+>```powershell
+>.\exiftool.exe ..\AstroKitty.png
 
+![[Exiftool.png]]
 
+It can reveal details about the file. A comment can be added to the metadata of the image:
 
+>[!powershell]
+>```powershell
+>.\exiftool.exe -comment="pwned" ..\AstroKitty.png
 
+![[Comment Pwned.png]]
 
+Try modifying the comment with some PHP:
 
+>[!powershell]
+>```powershell
+>.\exiftool.exe -comment="<?php echo 'PAYLOAD' . file_get_contents('/etc/passwd') . 'PAYLOAD2'; ?>" ..\AstroKitty.png
 
+![[Comment PHP.png]]
 
+Next, make it a polyglot by specifying an output file to create a new file with a different extension:
 
+>[!powershell]
+>```powershell
+>.\exiftool.exe -comment="<?php echo 'PAYLOAD' . file_get_contents('/etc/passwd') . 'PAYLOAD2'; ?>" ..\AstroKitty.png -o polyglot.php
 
+![[Polyglot.png]]
 
+Try uploading the polyglot and navigating to it - the PHP code may be executed:
 
+![[Payload Exec.png]]
 
-
-
-
-
-
-
-
-
-
-
-
-# Bypass File Extension Allow List
-
-The null byte injection (%00) may bypass the file extension restriction as this can alter the intended logic of the app. If the app is only allowing files that have the extension ".png", you can supply the following filename:
-
-```bash
-malicious.php%00.png
-```
-# Bypass JPEG Signature Validation
-
-Here, the app ma be checking that the file's contents begin with a certain byte structure. Simply inject the malicious code after the beginning bytes of the file to bypass this validation. Tools can be used to inject this malicious code in the metadata to avoid "breaking" the file/image.
+Another way is to simply inject the malicious code after the beginning bytes of the file to bypass this validation. 
 
 ![[File Upload 3.png]]
 
 ![[File Upload 4.png]]
-
-# Other Methods
-
-Stored XSS by uploading HTML page with JavaScript. Exploiting vulnerabilities specific to the parsing or processing of different file formats to cause XXE injection (.doc, .xls). Finally, using the PUT method to upload files, use the OPTIONS request method to determine what methods are accepted.
