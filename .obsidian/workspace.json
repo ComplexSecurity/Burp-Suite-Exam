@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "File Uploads/File Uploads.md",
+                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "File Uploads"
+              "title": "HTTP Request Smuggling"
             }
           }
         ]
@@ -93,7 +93,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "File Uploads/File Uploads.md",
+                "file": "OS Command Injection/OS Command Injection.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +103,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for File Uploads"
+              "title": "Backlinks for OS Command Injection"
             }
           },
           {
@@ -112,12 +112,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "File Uploads/File Uploads.md",
+                "file": "OS Command Injection/OS Command Injection.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from File Uploads"
+              "title": "Outgoing links from OS Command Injection"
             }
           },
           {
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "File Uploads/File Uploads.md"
+                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of File Uploads"
+              "title": "Outline of HTTP Request Smuggling"
             }
           },
           {
@@ -185,20 +185,19 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "OS Command Injection/OS Command Injection.md",
+    "00-Attachments/Collaborator.png",
+    "00-Attachments/Output TXT.png",
+    "00-Attachments/Ping Test.png",
+    "00-Attachments/Test Sleep.png",
+    "00-Attachments/Pipe Whoami.png",
+    "File Uploads ✅/File Uploads.md",
     "00-Attachments/Payload Exec.png",
     "00-Attachments/Polyglot.png",
     "00-Attachments/Comment PHP.png",
     "00-Attachments/Comment Pwned.png",
     "00-Attachments/Exiftool.png",
-    "00-Attachments/Null Byte.png",
-    "00-Attachments/URL Encoded.png",
-    "00-Attachments/PHP JPG.png",
-    "00-Attachments/Capital.png",
-    "00-Attachments/Shell Extension.png",
-    "00-Attachments/HTAccess.png",
-    "OS Command Injection/OS Command Injection.md",
     "Path Traversal/Path Traversal.md",
-    "File Uploads/File Uploads.md",
     "Information Disclosure ✅/Information Disclosure.md",
     "wget.exe",
     "Prototype Pollution ✅/Prototype Pollution.md",
