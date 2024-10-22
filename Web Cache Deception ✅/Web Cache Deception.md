@@ -64,15 +64,23 @@ Test how the cache maps URL paths to resources by modifying the path to attempt 
 >[!info]
 >Burp Scanner detects this as well as Web Cache Deception Scanner.
 
-Try to identify a target endpoint such as an account page containing an API key. Once identified, try adding an arbitrary segment to the base path such as `/my-account/abc` and see if the response is the same - indicates the path is abstracted.
+Try to identify a target endpoint such as an account page containing an API key. Once identified, try adding an arbitrary segment to the base path such as `/my-account/abc` and see if the response is the same - indicates the path is abstracted:
 
-Add static extension such as `/my-account/abc.js` - if cache headers are present, it interprets URL path as sent and caches on JS files. To exploit, host the following in exploit server:
+![[My ABC.png]]
+
+Add static extension such as `/my-account/abc.js` - if cache headers are present, it interprets URL path as sent and caches on JS files:
+
+![[X-Cache.png]]
+
+This means the cache interprets the URL path as `/my-account/abc.js` and has a cache rule based on the `.js` static extension. To exploit, host the following in exploit server:
 
 ```html
 <script>document.location="https://YOUR-LAB-ID.web-security-academy.net/my-account/wcd.js"</script>
 ```
 
-Deliver and then visit the same URL to gain the cached response.
+Deliver and then visit the same URL to gain the cached response:
+
+![[Exposed.png]]
 # Exploiting Delimiter Discrepancies
 
 The `?` character is generally used to separate URL path from query string, but variations can occur between frameworks. Consider:
@@ -105,7 +113,10 @@ Find characters used as delimiters by the origin server. Start by adding an arbi
 
 Add a possible delimiter character between the original path and the arbitrary string - e.g. `/settings/users/list;aaa`. If the response is identical, it indicates the `;` is used as a delimiter. If it matches the response to the path with the arbitrary string, it indicates that the `;` character is not used as a delimiter.
 
-Test if they are also used by the cache by adding a static extension to the end of the path. If the response is cached, it indicates the cache does not use the delimiter and interprets the full URL path and there is a cache rule to store responses for requests ending `.js`.
+Test if they are also used by the cache by adding a static extension to the end of the path. If the response is cached, it:
+
+- indicates the cache does not use the delimiter and interprets the full URL path and;
+- there is a cache rule to store responses for requests ending `.js`.
 
 >[!info]
 >Test all ASCII characters and a range of common extensions (exe, ico, css, js). Use Intruder to quickly test the characters and turn off automated character encoding.
@@ -117,7 +128,13 @@ Construct an exploit that triggers the static extension cache rule - e.g. `/sett
 
 Origin server returns dynamic profile information stored in the cache.
 
-For example, attempt to add an arbitrary path to an account page such as `/my-account/abc` and see if the response is cached - if not, it indicates the origin server does not abstract the path. Try adding a string to the original path such as `/my-accountabc`. If also no caching, use it as a reference to identify characters not used as delimiters.
+For example, attempt to add an arbitrary path to an account page such as `/my-account/abc` and see if the response is cached - if not, it indicates the origin server does not abstract the path:
+
+![[ABC.png]]
+
+Try adding a string to the original path such as `/my-accountabc`. If also no caching, use it as a reference to identify characters not used as delimiters:
+
+![[MyAccountABC.png]]
 
 As an example, you can send the request to Intruder such as:
 
@@ -125,19 +142,27 @@ As an example, you can send the request to Intruder such as:
 /my-account§§abc
 ```
 
-Use a list of characters that can be used as delimiters. Look at responses and see what responds with the normal response. To investigate path limiter discrepancies, add the identified characters to the account page and add a file extension:
+Use a list of characters that can be used as delimiters. Look at responses and see what responds with the normal response:
+
+![[200OKs.png]]
+
+To investigate path limiter discrepancies, add the identified characters to the account page and add a file extension:
 
 ```json
 /my-account?abc.js
 ```
 
-Change the characters until one is cached. To exploit it, use the following:
+Change the characters until one is cached. 
+
+![[CacheControl.png]]
+
+This indicates that the cache doesn't use `;` as a path delimiter and has a cache rule based on the .js static extension.
+
+To exploit it, use the following and deliver it to the victim and navigate to it to view cached response.:
 
 ```html
 <script>document.location="https://YOUR-LAB-ID.web-security-academy.net/my-account;wcd.js"</script>
 ```
-
-Deliver to victim and navigate to it to view cached response.
 # Delimiter Decoding Discrepancies
 
 Sites needs to send data in the URL that contains characters that have a special meaning such as delimiters which means encoding them. Some parsers decode them before processing the URL. If decoded, it may be treated as a delimiter, truncating the URL.
@@ -209,15 +234,35 @@ Consider the payload `/assets/..%2fprofile`:
 
 Origin server returns the dynamic profile info, which is stored in cache.
 
-Account details may include the API key of a specific user. Changing the account page URL to `/my-account/abc` may return a 404 not found response, indicating the origin server does not abstract the path. Attempting `/my-accountabc` also results in a 404 with no caching.
+Account details may include the API key of a specific user. Changing the account page URL to `/my-account/abc` may return a 404 not found response indicating the origin server does not abstract the path:
 
-Fuzzing with a delimiter list without URL encoding results in the `?` character returning a 200 OK, indicating the origin server only uses `?` as a path delimiter - `?` is generally used as a path delimiter, so attempt normalization discrepancies.
+![[Not Found.png]]
 
-Attempt to submit something like `/aaa/..%2fmyaccount` - if a 200 comes back, it indicates the origin server decodes and resolves the dot segment. Also attempt to look for a static resource path like `resources` - look for any indication of caching from this directory.
+Attempting `/my-accountabc` also results in a 404 with no caching:
 
-If true, attempt an encoded segment - `/resources/..%2fRESOURCE`. Send twice - if a cache hits, it indicates the cache does not decode or resolve the dot segment and has a cache rule based on `/resources` prefix. Test further to make sure it is using the directory to cache by modifying it to `/resources/aaa`.
+![[myaccountabc2.png]]
 
-Craft an exploit with an arbitrary parameter and send to victim:
+Fuzzing with a delimiter list without URL encoding results in the `?` character returning a 200 OK, indicating the origin server only uses `?` as a path delimiter - `?` is generally used as a path delimiter, so attempt normalization discrepancies:
+
+![[200Question.png]]
+
+Attempt to submit something like `/aaa/..%2fmyaccount` - if a 200 comes back, it indicates the origin server decodes and resolves the dot segment:
+
+![[2F.png]]
+
+Also attempt to look for a static resource path like `resources` - look for any indication of caching from this directory:
+
+![[Resources.png]]
+
+If true, attempt an encoded segment - `/resources/..%2fRESOURCE`. Send twice - if a cache hits, it indicates the cache does not decode or resolve the dot segment and has a cache rule based on `/resources` prefix:
+
+![[Resourcesdot.png]]
+
+Test further to make sure it is using the directory to cache by modifying it to `/resources/aaa`:
+
+![[CacheHit.png]]
+
+This confirms a static directory cache rule is present based on the /resources prefix. Craft an exploit with an arbitrary parameter and send to victim and then navigate to the URL yourself:
 
 ```html
 <script>document.location="https://YOUR-LAB-ID.web-security-academy.net/resources/..%2fmy-account?wcd"</script>
@@ -245,17 +290,46 @@ Consider `/profile;%2f%2e%2e%2fstatic` with origin server using `;` as delimiter
 - Cache interprets it as `/static`
 - Origin interprets it as `/profile`
 
-Account details may include the API key of a specific user. Changing the account page URL to `/my-account/abc` may return a 404 not found response, indicating the origin server does not abstract the path. Attempting `/my-accountabc` also results in a 404 with no caching.
+Account details may include the API key of a specific user. Changing the account page URL to `/my-account/abc` may return a 404 not found response, indicating the origin server does not abstract the path:
+
+![[ABC3.png]]
+
+Attempting `/my-accountabc` also results in a 404 with no caching:
+
+![[accountABC.png]]
 
 Fuzzing with a delimiter list without URL encoding results in the `#`, `?`, `%23` and `%3f` characters returning a 200 OK, indicating the origin server uses them as a path delimiter - `#` should be ignored due to the browser using it as a delimiter before forwarding to cache.
 
-Attempt to submit something like `/myaccount?abc.js` - if the response does not have any caching it indicates the cache also uses it as a path delimiter or the cache does not have a rule based on JS extensions. Repeat using other characters.
+![[Hashtag.png]]
 
-Attempt to remove query string and add a directory followed by dot segment to start of path - `/aaa/..%2fmy-account` - if a 404 returns, it indicates the origin server does not decode/resolve the dot segment to normalize. Look at static resources and do the same thing - `/aaa/..%2fresources` - it may contain a cache header.
+Attempt to submit something like `/myaccount?abc.js` - if the response does not have any caching it indicates the cache also uses it as a path delimiter or the cache does not have a rule based on JS extensions:
 
-Test if it's the directory or the extension via `/resources/..%2fYOUR-RESOURCE`. If it no longer caches, it shows the cache decodes and resolves the dot segment and caches based on the /resources.
+![[QuestionMArk.png]]
 
-Test the delimiters via `/my-account?%2f%2e%2e%2fresources` - if it contains no caching, attempt the other characters until it does. Once it does, craft an exploit:
+>[!info]
+>Repeat using other characters.
+
+Attempt to remove query string and add a directory followed by dot segment to start of path - `/aaa/..%2fmy-account` - if a 404 returns, it indicates the origin server does not decode/resolve the dot segment to normalize:
+
+![[dotdot.png]]
+
+Look at static resources and do the same thing - `/aaa/..%2fresources` - it may contain a cache header:
+
+![[Resources Cache.png]]
+
+Test if it's the directory or the extension via `/resources/..%2fYOUR-RESOURCE`. If it no longer caches, it shows the cache decodes and resolves the dot segment and caches based on the /resources:
+
+![[TestSVG.png]]
+
+Test the delimiters via `/my-account?%2f%2e%2e%2fresources`:
+
+![[NoCache.png]]
+
+If it contains no caching, attempt the other characters until it does:
+
+![[XCache.png]]
+
+Once it does, craft an exploit:
 
 ```html
 <script>document.location="https://YOUR-LAB-ID.web-security-academy.net/my-account%23%2f%2e%2e%2fresources?wcd"</script>
