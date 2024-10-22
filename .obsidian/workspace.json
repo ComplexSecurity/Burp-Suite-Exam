@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
+                "file": "Web Cache Deception ✅/Web Cache Deception.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "HTTP Request Smuggling"
+              "title": "Web Cache Deception"
             }
           }
         ]
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "HTTP Request Smuggling ✅/HTTP Request Smuggling.md"
+                "file": "Web Cache Deception ✅/Web Cache Deception.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of HTTP Request Smuggling"
+              "title": "Outline of Web Cache Deception"
             }
           },
           {
@@ -185,44 +185,45 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
-    "OS Command Injection/OS Command Injection.md",
-    "00-Attachments/Collaborator.png",
-    "00-Attachments/Output TXT.png",
-    "00-Attachments/Ping Test.png",
-    "00-Attachments/Test Sleep.png",
-    "00-Attachments/Pipe Whoami.png",
+    "Web LLM Attacks ✅/Web LLM Attacks.md",
+    "00-Attachments/Deleted.png",
+    "00-Attachments/Encoded XSS.png",
+    "00-Attachments/XSS Vuln.png",
+    "00-Attachments/Attacker Review.png",
+    "00-Attachments/Content.png",
+    "00-Attachments/Umbrella.png",
+    "00-Attachments/Attacker Test.png",
+    "00-Attachments/Whoami LLM.png",
+    "00-Attachments/Subscribed.png",
+    "00-Attachments/Email Newsletter.png",
+    "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
+    "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
+    "Authentication/Authentication.md",
+    "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
+    "Path Traversal ✅/Path Traversal.md",
+    "OS Command Injection ✅/OS Command Injection.md",
     "File Uploads ✅/File Uploads.md",
-    "00-Attachments/Payload Exec.png",
-    "00-Attachments/Polyglot.png",
-    "00-Attachments/Comment PHP.png",
-    "00-Attachments/Comment Pwned.png",
-    "00-Attachments/Exiftool.png",
-    "Path Traversal/Path Traversal.md",
     "Information Disclosure ✅/Information Disclosure.md",
-    "wget.exe",
     "Prototype Pollution ✅/Prototype Pollution.md",
     "HTTP Request Smuggling ✅/HTTP Request Smuggling.md",
     "Clickjacking ✅/Clickjacking.md",
-    "Web Cache Poisoning/Web Cache Poisoning.md",
     "DOM-Based Vulnerabilities ✅/DOM-Based Vulnerabilities.md",
-    "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
-    "WebSockets ✅/WebSockets.md",
-    "Web LLM Attacks ✅/Web LLM Attacks.md",
-    "Web Cache Deception ✅/Web Cache Deception.md",
-    "Server-Side Template Injection (SSTI) ✅/Server-Side Template Injection (SSTI).md",
-    "Server-Side Request Forgery (SSRF) ✅/Server-Side Request Forgery (SSRF).md",
-    "Race Conditions ✅/Race Conditions.md",
-    "OAuth ✅/OAuth.md",
-    "NoSQL Injections ✅/NoSQL Injections.md",
-    "JWT ✅/JWT.md",
     "Insecure Deserialization ✅/Insecure Deserialization.md",
     "HTTP Host Header Attacks ✅/HTTP Host Header Attacks.md",
+    "XML External Entities (XXE) ✅/XML External Entities (XXE).md",
+    "Server-Side Template Injection (SSTI) ✅/Server-Side Template Injection (SSTI).md",
+    "Server-Side Request Forgery (SSRF) ✅/Server-Side Request Forgery (SSRF).md",
+    "OAuth ✅/OAuth.md",
+    "JWT ✅/JWT.md",
+    "Race Conditions ✅/Race Conditions.md",
+    "NoSQL Injections ✅/NoSQL Injections.md",
+    "WebSockets ✅/WebSockets.md",
     "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
     "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
     "API Testing ✅/API Testing.md",
+    "wget.exe",
     "00-Attachments/XXE Thumbnail.jpeg.crdownload",
     "00-Attachments/XXE Thumbnail.jpg.crdownload",
-    "Access Control Vulnerabilities/Access Control Vulnerabilities.md",
     "00-Attachments/Pass Reset Collision.png.crdownload",
     "00-Attachments/JWT attacks.pdf",
     "00-Attachments/JWT attacks.pdf.crdownload",

