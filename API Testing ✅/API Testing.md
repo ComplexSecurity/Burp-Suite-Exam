@@ -36,15 +36,27 @@ If you identify an endpoint for a resource, make sure to investigate the base pa
 
 Using all functionality of the application may uncover an API endpoint when updating certain details (i.e. email address):
 
-- `/api/user/wiener`
+```http
+/api/user/wiener
+```
+
+![[APIWiener.png]]
 
 Try requesting the base API path to disclose the API functionality in the response:
 
-- `/api/`
+```http
+/api/
+```
+
+![[RESTAPI.png]]
 
 You can potentially use the API to delete or modify other users:
 
-- `DELETE /api/user/carlos`
+```http
+DELETE /api/user/carlos
+```
+
+![[DELETE.png]]
 # Identifying API Endpoints
 
 Review any JavaScript files as these can disclose API functionality. Look for any suggested API endpoints such as `/api`. Try changing the HTTP method and media type (Content-Type header/request body) when requesting the API to determine what is accepted and each endpoint.
@@ -77,7 +89,11 @@ Use all of the application's functionality that is available. As an example, whe
 
 - /api/products/1/price
 
-The request can be sent to Repeater and the HTTP method can be tested to identify which ones are accepted. An example is the PATCH method which may be used. Additionally, test the various media types that it accepts (eg. application/json).
+![[API 1 Price.png]]
+
+The request can be sent to Repeater and the HTTP method can be tested to identify which ones are accepted. An example is the PATCH method which may be used. Additionally, test the various media types that it accepts (eg. application/json):
+
+![[contentJSON.png]]
 
 The price may be able to be changed after identifying these:
 
@@ -98,7 +114,11 @@ Attempt to change the price via the PATCH method - may require authentication. A
 {}
 ```
 
-Add any parameters that may be disclosed back to potentially modify certain items.
+Add any parameters that may be disclosed back to potentially modify certain items:
+
+Try changing the content type and re-submitting to match the expected input by looking at the normal request JSON response:
+
+![[PRice5.png]]
 # Finding Hidden Parameters
 
 There are numerous tools to help identify hidden parameters. Intruder allows you to automatically discover hidden parameters using a wordlist of common parameter names to replace existing parameters or add new parameters. 
@@ -167,7 +187,9 @@ If different behaviours occur, it suggests the invalid value impacts the query l
 }
 ```
 
-Use all the functionality to popular Burp's HTTP history for review. Afterwards, you may notice a request such as GET /api/checkout which returns the following information in response:
+If the `isAdmin` value in the request is bound to the user object without adequate validation and sanitization, the user `wiener` may be incorrectly granted admin privileges.
+
+For example, use all the functionality to popular Burp's HTTP history for review. Afterwards, you may notice a request such as GET /api/checkout which returns the following information in response:
 
 ```json
 {
@@ -185,6 +207,8 @@ Use all the functionality to popular Burp's HTTP history for review. Afterwards,
 }
 ```
 
+![[GET Checkout.png]]
+
 Or a POST request to /api/checkout which contains the request body:
 
 ```json
@@ -197,6 +221,8 @@ Or a POST request to /api/checkout which contains the request body:
   ]
 }
 ```
+
+![[POST checkout.png]]
 
 Above, you could submit the following using the POST request to purchase the item for free:
 
@@ -213,6 +239,8 @@ Above, you could submit the following using the POST request to purchase the ite
   ]
 }
 ```
+
+![[Discount.png]]
 # Server-Side Parameter Pollution
 
 Some systems contains internal APIs that are not directly accessible from the internet. Server-side parameter pollution occurs when a website embeds user input in a server-side request to an internal API without adequate encoding. This means an attacker may be able to manipulate or inject parameters which may enabled them to:
@@ -306,35 +334,25 @@ It interprets two name parameters. Impact can vary depending on different techno
 >If you're able to override the original parameter, you may be able to conduct an exploit. For example, you could add name=administrator to the request. This may enable you to log in as the administrator user.
 # Exploiting Server-side parameter pollution in query string
 
-Try to submit fuzzing payloads to identify application behaviour. A forgotten password functionality may exist. As an example, the following payload may returned a "Parameter is not supported" message which indicates that the injected parameter was processed by the backend API:
+Try to submit fuzzing payloads to identify application behaviour. A forgotten password functionality may exist. If so, try changing the username to an invalid username and observe the response:
+
+![[InvalidUser.png]]
+
+Try injecting a second parameter value pair. As an example, the following payload may returned a "Parameter is not supported" message which indicates that the injected parameter was processed by the backend API:
 
 ```html
 csrf=VlaNiS8DCwtHUAzh7m5tsBzmxx5lWd4T&username=administrator%26id=test
 ```
 
-The payload below may return a "Field not specified" message:
+![[Param.png]]
 
-```html
-csrf=VlaNiS8DCwtHUAzh7m5tsBzmxx5lWd4T&username=administrator%23test
-```
-
-The payload below may return an Invalid username error message:
-
-```html
-csrf=VlaNiS8DCwtHUAzh7m5tsBzmxx5lWd4T&username=administratorxyz
-```
-
-Attempt to add a second parameter pair using a `&` character such as:
-
-```html
-csrf=VlaNiS8DCwtHUAzh7m5tsBzmxx5lWd4T&username=administrator%26x=z
-```
-
-It may return a parameter is not supported message, meaning the internal API interpreted it as a separate parameter, and not part of the username. From here, attempt to truncate the server-side query string via `#`:
+It may suggest the internal API may have interpreted `id=test` as a separate parameter, instead of the username. Try truncating the query string using a URL encoded `#`. The payload below may return a "Field not specified" message:
 
 ```html
 csrf=VlaNiS8DCwtHUAzh7m5tsBzmxx5lWd4T&username=administrator%23
 ```
+
+![[Adminhash.png]]
 
 An error message may be returned stating field is not specified meaning the server-side query may include an additional parameter called `field` which is removed via the `#` character. Adding the field parameter with an invalid value may result in an Invalid field message:
 
@@ -342,11 +360,19 @@ An error message may be returned stating field is not specified meaning the serv
 csrf=VlaNiS8DCwtHUAzh7m5tsBzmxx5lWd4T&username=administrator%26field=x%23
 ```
 
-Attempt to brute force the field value using Intruder and the "Server-side variable names" wordlist. It may return a result such as `email` with a 200 OK response. Change the value to email - if it is the original response, it suggests it to be a valid field type:
+![[Invalidfield.png]]
+
+Attempt to brute force the field value using Intruder and the "Server-side variable names" wordlist. It may return a result such as `email` with a 200 OK response:
+
+![[emailfield.png]]
+
+Change the value to email - if it is the original response, it suggests it to be a valid field type:
 
 ```html
 csrf=VlaNiS8DCwtHUAzh7m5tsBzmxx5lWd4T&username=administrator%26field=email%23
 ```
+
+![[emailworks.png]]
 
 Remember to analyse the JavaScript files as well such as `forgotPassword.js` which may include a password reset endpoint such as:
 
@@ -354,11 +380,15 @@ Remember to analyse the JavaScript files as well such as `forgotPassword.js` whi
 /forgot-password?reset_token=${resetToken}
 ```
 
+![[forgotpassword.png]]
+
 Attempt to change the value of `field` to `reset_token` and resend - if it returns a password reset token, save it:
 
 ```html
 csrf=VlaNiS8DCwtHUAzh7m5tsBzmxx5lWd4T&username=administrator%26field=reset_token%23
 ```
+
+![[ResetToken.png]]
 
 Try navigating to the endpoint with the reset token to see if it works. The request below could be submitted to successfully reset the password for the admin user:
 

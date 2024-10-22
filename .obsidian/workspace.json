@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Web Cache Deception ✅/Web Cache Deception.md",
+                "file": "API Testing ✅/API Testing.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Web Cache Deception"
+              "title": "API Testing"
             }
           }
         ]
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Web Cache Deception ✅/Web Cache Deception.md"
+                "file": "API Testing ✅/API Testing.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of Web Cache Deception"
+              "title": "Outline of API Testing"
             }
           },
           {
@@ -185,17 +185,18 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
-    "00-Attachments/XCache.png",
-    "00-Attachments/NoCache.png",
-    "00-Attachments/TestSVG.png",
-    "00-Attachments/Resources Cache.png",
-    "00-Attachments/dotdot.png",
-    "00-Attachments/QuestionMArk.png",
-    "00-Attachments/Hashtag.png",
-    "00-Attachments/accountABC.png",
-    "00-Attachments/ABC3.png",
-    "00-Attachments/CacheHit.png",
-    "00-Attachments/Resourcesdot.png",
+    "00-Attachments/ResetToken.png",
+    "00-Attachments/forgotpassword.png",
+    "00-Attachments/emailworks.png",
+    "00-Attachments/emailfield.png",
+    "00-Attachments/Invalidfield.png",
+    "00-Attachments/Adminhash.png",
+    "00-Attachments/Param.png",
+    "00-Attachments/InvalidUser.png",
+    "00-Attachments/Discount.png",
+    "00-Attachments/POST checkout.png",
+    "00-Attachments/GET Checkout.png",
+    "Web Cache Deception ✅/Web Cache Deception.md",
     "Web LLM Attacks ✅/Web LLM Attacks.md",
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
     "Business Logic Vulnerabilities/Business Logic Vulnerabilities.md",
@@ -220,7 +221,6 @@
     "NoSQL Injections ✅/NoSQL Injections.md",
     "WebSockets ✅/WebSockets.md",
     "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
-    "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
     "wget.exe",
     "00-Attachments/XXE Thumbnail.jpeg.crdownload",
     "00-Attachments/XXE Thumbnail.jpg.crdownload",
