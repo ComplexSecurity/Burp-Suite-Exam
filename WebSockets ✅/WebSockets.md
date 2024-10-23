@@ -65,17 +65,35 @@ These vulnerabilities involve design flaws like:
 - Attack surface introduced by custom HTTP headers
 # Manipulating WebSocket Handshakes
 
-If WebSockets block your IP after sending a malicious alert, attempt to add a match and replace rule for `X-Forwarded-For` and session handling rules along with Request Randomizer to send a random value every request and potentially bypass the blacklist.
+If WebSockets block your IP after sending a malicious alert such as:
 
-Try to analyse what triggers the blacklisting - keywords, special characters, full payloads, etc. Try various different payloads and see what works, including:
+![[AttackDetected.png]]
+
+![[Blacklisted.png]]
+
+Attempt to add a match and replace rule for `X-Forwarded-For` and session handling rules along with Request Randomizer to send a random value every request and potentially bypass the blacklist:
+
+![[RANDOM.png]]
+
+![[Randomizer.png]]
+
+This makes every request have a random value for the X-Forwarded-For header. After, try to analyse what triggers the blacklisting - keywords, special characters, full payloads, etc:
+
+![[AttackDetect.png]]
+
+Try various different payloads and see what works, including:
 
 ```html
 <img src=1 oNeRrOr=alert`1`>
 ```
 
+![[NonBlocked.png]]
+
 ```html
 <img src=0 oNeRrOr=window['ale'+'rt'](window['doc'+'ument']['dom'+'ain'])>
 ```
+
+![[Brackets.png]]
 
 Encoding may also be required on the keywords that trigger the alert:
 
@@ -111,10 +129,25 @@ If vulnerable, then a cross-site request is performed to open a WebSocket and ca
 - Sending WebSocket messages to perform unauthorized actions on behalf of the victim user
 - Sending WebSocket messages to retrieve sensitive data
 - Sometimes, just waiting for incoming messages to arrive containing sensitive data
+# Cross-Site WebSocket Hijacking Exploitation
 
-Try interacting with the bot and refreshing the page. If the chat history persists, it likely uses a session cookie to track the live chats. Check if this session token has the SameSite flag. Attempt to resend the READY message  and check if the chat history returns. 
+Try interacting with the bot and refreshing the page - there may be a READY command sent that grabs past messages:
 
-Also check that the /chat endpoint has no unpredictable token values. Launch an attack:
+![[READY message.png]]
+
+If the chat history persists, it likely uses a session cookie to track the live chats. Check if this session token has the SameSite flag:
+
+![[SameSiteNone.png]]
+
+Attempt to resend the READY message and check if the chat history returns:
+
+![[READYChat.png]]
+
+Also check that the /chat endpoint has no unpredictable token values:
+
+![[GETChat.png]]
+
+Launch an attack:
 
 1. Create an exploit page that contains a payload
 2. JS will open the WebSocket, send a READY message, grab the chat history and send it back to us
@@ -164,6 +197,10 @@ ws.onmessage = function (event) {
 - Opens a new WebSocket with specified URL
 - When opened, run a function that sends the READY message
 - Receive back info from the server and use fetch to send request to attacker endpoint
+
+Test it to see if it works. If requests are retrieved in Collaborator, send it to the victim.
+
+![[CollabDomains.png]]
 
 An example exploitation payload - although this does not work in the labs, this is something that can be done to inject XSS through web socket messages to attack other users. The "message" parameter in the lab was used to communicate/send messages to the server through web socket.
 
