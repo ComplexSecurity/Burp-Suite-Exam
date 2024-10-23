@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "API Testing ✅/API Testing.md",
+                "file": "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "API Testing"
+              "title": "Cross-Origin Resource Sharing (CORS)"
             }
           }
         ]
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "API Testing ✅/API Testing.md"
+                "file": "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md"
               },
               "icon": "lucide-list",
-              "title": "Outline of API Testing"
+              "title": "Outline of Cross-Origin Resource Sharing (CORS)"
             }
           },
           {
@@ -185,6 +185,9 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "00-Attachments/Origin Header.png",
+    "00-Attachments/ACAC Header.png",
+    "API Testing ✅/API Testing.md",
     "00-Attachments/ResetToken.png",
     "00-Attachments/forgotpassword.png",
     "00-Attachments/emailworks.png",
@@ -194,8 +197,6 @@
     "00-Attachments/Param.png",
     "00-Attachments/InvalidUser.png",
     "00-Attachments/Discount.png",
-    "00-Attachments/POST checkout.png",
-    "00-Attachments/GET Checkout.png",
     "Web Cache Deception ✅/Web Cache Deception.md",
     "Web LLM Attacks ✅/Web LLM Attacks.md",
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
@@ -220,7 +221,6 @@
     "Race Conditions ✅/Race Conditions.md",
     "NoSQL Injections ✅/NoSQL Injections.md",
     "WebSockets ✅/WebSockets.md",
-    "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
     "wget.exe",
     "00-Attachments/XXE Thumbnail.jpeg.crdownload",
     "00-Attachments/XXE Thumbnail.jpg.crdownload",
