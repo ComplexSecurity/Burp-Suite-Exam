@@ -39,10 +39,23 @@ If no other input processing or defenses are in place, a PoC XSS attack can be s
 ```json
 {"message":"<img src=1 onerror='alert(1)'>"}
 ```
+# Manipulating WebSockets to Exploit Vulnerabilities
 
-Try to determine if any filtering takes place such as backslash escaping, HTML encoding angle brackets or other forms of encoding. Bypasses may be available. If forward slashes - `/` - are escaped, try using XSS payloads that do not require one such as the img above.
+For example, there may be a web app with a live chat function that uses WebSockets:
 
-For example, try sending the `<` as a starter alongside other characters such as `>` or keywords like `alert`.  If encoded on the page, try intercepting it and resending the request with the decoded payload if it works.
+![[WebSockets.png]]
+
+Try to determine if any filtering takes place such as backslash escaping, HTML encoding angle brackets or other forms of encoding:
+
+![[Browser Encodes.png]]
+
+Bypasses may be available. If forward slashes - `/` - are escaped, try using XSS payloads that do not require one such as the img above.
+
+For example, try sending the `<` as a starter alongside other characters such as `>` or keywords like `alert`.  If encoded on the page, try intercepting it and resending the request with the decoded payload if it works:
+
+![[Img Src.png]]
+
+![[Alert 1.png]]
 # Manipulating Handshake
 
 These vulnerabilities involve design flaws like:
@@ -50,6 +63,7 @@ These vulnerabilities involve design flaws like:
 - Misplaced trust in HTTP headers to perform security decisions - i.e. `X-Forwarded-For`
 - Flaws in session handling since the session context is generally determine by the session context of the handshake
 - Attack surface introduced by custom HTTP headers
+# Manipulating WebSocket Handshakes
 
 If WebSockets block your IP after sending a malicious alert, attempt to add a match and replace rule for `X-Forwarded-For` and session handling rules along with Request Randomizer to send a random value every request and potentially bypass the blacklist.
 

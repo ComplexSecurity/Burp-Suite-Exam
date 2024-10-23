@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
+                "file": "WebSockets ✅/WebSockets.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "GraphQL API Vulnerabilities"
+              "title": "WebSockets"
             }
           }
         ]
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md"
+                "file": "WebSockets ✅/WebSockets.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of GraphQL API Vulnerabilities"
+              "title": "Outline of WebSockets"
             }
           },
           {
@@ -185,6 +185,11 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
+    "00-Attachments/Alert 1.png",
+    "00-Attachments/Img Src.png",
+    "00-Attachments/Browser Encodes.png",
+    "00-Attachments/WebSockets.png",
+    "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
     "00-Attachments/pwnedNET.png",
     "00-Attachments/CSRFBody.png",
     "00-Attachments/EmailGraphQL.png",
@@ -192,10 +197,6 @@
     "00-Attachments/attack123.png",
     "00-Attachments/Rate Limiting.png",
     "00-Attachments/MutationLog.png",
-    "00-Attachments/ID 1 Value.png",
-    "00-Attachments/Queries.png",
-    "00-Attachments/Graph Bypass.png",
-    "00-Attachments/Intro Disallowed.png",
     "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
     "API Testing ✅/API Testing.md",
     "Web Cache Deception ✅/Web Cache Deception.md",
@@ -220,7 +221,6 @@
     "OAuth ✅/OAuth.md",
     "JWT ✅/JWT.md",
     "Race Conditions ✅/Race Conditions.md",
-    "NoSQL Injections ✅/NoSQL Injections.md",
     "wget.exe",
     "00-Attachments/XXE Thumbnail.jpeg.crdownload",
     "00-Attachments/XXE Thumbnail.jpg.crdownload",
