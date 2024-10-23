@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
+                "file": "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Cross-Origin Resource Sharing (CORS)"
+              "title": "GraphQL API Vulnerabilities"
             }
           }
         ]
@@ -139,10 +139,10 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md"
+                "file": "GraphQL API Vulnerabilities ✅/GraphQL API Vulnerabilities.md"
               },
               "icon": "lucide-list",
-              "title": "Outline of Cross-Origin Resource Sharing (CORS)"
+              "title": "Outline of GraphQL API Vulnerabilities"
             }
           },
           {
@@ -185,18 +185,19 @@
   },
   "active": "db988ccae32437fc",
   "lastOpenFiles": [
-    "00-Attachments/Final Payload.png",
-    "00-Attachments/XSS Stock.png",
-    "00-Attachments/Stock Subdomain.png",
-    "00-Attachments/Subdomain.png",
-    "00-Attachments/ACAO.png",
-    "00-Attachments/CORS Admin.png",
-    "00-Attachments/Origin Header.png",
-    "00-Attachments/ACAC Header.png",
+    "00-Attachments/pwnedNET.png",
+    "00-Attachments/CSRFBody.png",
+    "00-Attachments/EmailGraphQL.png",
+    "00-Attachments/mobilemail.png",
+    "00-Attachments/attack123.png",
+    "00-Attachments/Rate Limiting.png",
+    "00-Attachments/MutationLog.png",
+    "00-Attachments/ID 1 Value.png",
+    "00-Attachments/Queries.png",
+    "00-Attachments/Graph Bypass.png",
+    "00-Attachments/Intro Disallowed.png",
+    "Cross-Origin Resource Sharing (CORS) ✅/Cross-Origin Resource Sharing (CORS).md",
     "API Testing ✅/API Testing.md",
-    "00-Attachments/ResetToken.png",
-    "00-Attachments/forgotpassword.png",
-    "00-Attachments/emailworks.png",
     "Web Cache Deception ✅/Web Cache Deception.md",
     "Web LLM Attacks ✅/Web LLM Attacks.md",
     "Cross-Site Scripting (XSS)/Cross-Site Scripting (XSS).md",
@@ -220,7 +221,6 @@
     "JWT ✅/JWT.md",
     "Race Conditions ✅/Race Conditions.md",
     "NoSQL Injections ✅/NoSQL Injections.md",
-    "WebSockets ✅/WebSockets.md",
     "wget.exe",
     "00-Attachments/XXE Thumbnail.jpeg.crdownload",
     "00-Attachments/XXE Thumbnail.jpg.crdownload",

